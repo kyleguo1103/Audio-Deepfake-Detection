@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below, together with the datasets and model listed in ATTRIBUTION.md."
+title: "XLS-R Layer Selection and Controlled Augmentation in Cross-Domain Audio Deepfake Detection: pilot code and results"
+authors:
+  - family-names: Guo
+    given-names: Jingkai
+    affiliation: "School of Electrical Engineering and Computer Science, The University of Queensland"
+repository-code: "https://github.com/kyleguo1103/Audio-Deepfake-Detection"
+license: MIT
+date-released: 2026-10-13
+keywords:
+  - audio deepfake detection
+  - cross-domain generalization
+  - XLS-R
+  - layer selection
+  - data augmentation

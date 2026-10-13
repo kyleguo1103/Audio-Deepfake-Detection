@@ -1,0 +1,75 @@
+{
+  "created_at_utc": "2026-10-11T02:19:18+00:00",
+  "status": "EXPLORATORY_POST_HOC",
+  "layers": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24
+  ],
+  "bootstrap_reps_used": 1000,
+  "conditions": {
+    "none": {
+      "layer_averaged_target_eer": 0.2597584992507305,
+      "layer_averaged_delta_vs_none": 0.0,
+      "delta_ci_speaker_cluster": null,
+      "layers_better_than_none": null
+    },
+    "codec": {
+      "layer_averaged_target_eer": 0.26419870392794453,
+      "layer_averaged_delta_vs_none": 0.00444020467721401,
+      "delta_ci_speaker_cluster": [
+        -0.01711564542113753,
+        0.02404042860586605
+      ],
+      "layers_better_than_none": 6
+    },
+    "noise": {
+      "layer_averaged_target_eer": 0.2201767820882674,
+      "layer_averaged_delta_vs_none": -0.039581717162463115,
+      "delta_ci_speaker_cluster": [
+        -0.06256127590734632,
+        -0.020932834058646915
+      ],
+      "layers_better_than_none": 12
+    },
+    "channel": {
+      "layer_averaged_target_eer": 0.24611422458823445,
+      "layer_averaged_delta_vs_none": -0.01364427466249607,
+      "delta_ci_speaker_cluster": [
+        -0.040838944074282416,
+        0.011059775894440694
+      ],
+      "layers_better_than_none": 10
+    },
+    "mix": {
+      "layer_averaged_target_eer": 0.2602573045292551,
+      "layer_averaged_delta_vs_none": 0.0004988052785245833,
+      "delta_ci_speaker_cluster": [
+        -0.02759624239031452,
+        0.024374520810283625
+      ],
+      "layers_better_than_none": 7
+    },
+    "all": {
+      "layer_averaged_target_eer": 0.24543574719005898,
+      "layer_averaged_delta_vs_none": -0.014322752060671545,
+      "delta_ci_speaker_cluster": [
+        -0.04600510526142379,
+        0.01159185215030086
+      ],
+      "layers_better_than_none": 9
+    }
+  },
+  "reading": "primary gain depends on layer selection; fixed-layer effect not robust",
+  "minutes": 23.2
+}

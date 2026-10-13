@@ -1,0 +1,151 @@
+{
+  "raw_duration_and_silence": {
+    "features": [
+      "raw_seconds",
+      "lead_silence_s",
+      "trail_silence_s"
+    ],
+    "source_val_eer": 0.30100000000000005,
+    "source_val_auc": 0.747182,
+    "target_eer": 0.4523368231227771,
+    "target_auc": 0.5614945812413764
+  },
+  "model_input_duration_only": {
+    "features": [
+      "used_seconds"
+    ],
+    "source_val_eer": 0.43614285714285717,
+    "source_val_auc": 0.602473,
+    "target_eer": 0.4260721782129272,
+    "target_auc": 0.5992127985011947
+  },
+  "distributions": {
+    "source_train": {
+      "raw_seconds": {
+        "real": {
+          "mean": 3.3732873333333333,
+          "median": 3.2398499999999997
+        },
+        "fake": {
+          "mean": 3.432062333333333,
+          "median": 3.1925
+        }
+      },
+      "lead_silence_s": {
+        "real": {
+          "mean": 0.7229749999999999,
+          "median": 0.71
+        },
+        "fake": {
+          "mean": 0.49382499999999996,
+          "median": 0.32
+        }
+      },
+      "trail_silence_s": {
+        "real": {
+          "mean": 0.3242045,
+          "median": 0.24380000000000002
+        },
+        "fake": {
+          "mean": 0.3181529166666667,
+          "median": 0.26955
+        }
+      },
+      "used_seconds": {
+        "real": {
+          "mean": 2.3225624999999996,
+          "median": 2.245
+        },
+        "fake": {
+          "mean": 2.5776375,
+          "median": 2.345
+        }
+      }
+    },
+    "source_val": {
+      "raw_seconds": {
+        "real": {
+          "mean": 3.5365645000000003,
+          "median": 3.3701
+        },
+        "fake": {
+          "mean": 3.4999099,
+          "median": 3.36435
+        }
+      },
+      "lead_silence_s": {
+        "real": {
+          "mean": 0.924,
+          "median": 0.9
+        },
+        "fake": {
+          "mean": 0.49023,
+          "median": 0.33
+        }
+      },
+      "trail_silence_s": {
+        "real": {
+          "mean": 0.404785,
+          "median": 0.27835
+        },
+        "fake": {
+          "mean": 0.3198081,
+          "median": 0.2736
+        }
+      },
+      "used_seconds": {
+        "real": {
+          "mean": 2.2062128999999997,
+          "median": 2.115
+        },
+        "fake": {
+          "mean": 2.6687849999999997,
+          "median": 2.4850000000000003
+        }
+      }
+    },
+    "target": {
+      "raw_seconds": {
+        "real": {
+          "mean": 3.7430182788158097,
+          "median": 2.991
+        },
+        "fake": {
+          "mean": 5.208250719363575,
+          "median": 4.04555
+        }
+      },
+      "lead_silence_s": {
+        "real": {
+          "mean": 0.09285277763863149,
+          "median": 0.0
+        },
+        "fake": {
+          "mean": 0.1712762356127285,
+          "median": 0.23
+        }
+      },
+      "trail_silence_s": {
+        "real": {
+          "mean": 0.0710611431147623,
+          "median": 0.007
+        },
+        "fake": {
+          "mean": 0.12647652335815843,
+          "median": 0.1241
+        }
+      },
+      "used_seconds": {
+        "real": {
+          "mean": 3.17751541852427,
+          "median": 2.825
+        },
+        "fake": {
+          "mean": 3.812315411306703,
+          "median": 3.735
+        }
+      }
+    }
+  },
+  "note": "Silence is trimmed before XLS-R in every condition. These scores show how much label signal duration/silence metadata alone would carry; high source scores mean the source has a known shortcut."
+}

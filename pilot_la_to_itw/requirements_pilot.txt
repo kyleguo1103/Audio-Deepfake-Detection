@@ -1,0 +1,9 @@
+# Install torch FIRST with the CUDA wheel (see RUN_GUIDE_zh.md), then: pip install -r requirements_pilot.txt
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.5.2
+matplotlib==3.9.2
+soundfile==0.12.1
+tqdm==4.66.5
+imageio-ffmpeg==0.5.1
+transformers==4.44.2

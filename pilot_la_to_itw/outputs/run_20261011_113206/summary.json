@@ -1,0 +1,287 @@
+{
+  "target_scope": "all_clips",
+  "primary_comparison": {
+    "treatment": "mix",
+    "control": "none"
+  },
+  "decision_rule": "Improvement supported only if the 95% speaker-cluster bootstrap CI of (EER_mix - EER_none), averaged over seeds, lies entirely below 0; harm if entirely above 0; otherwise inconclusive.",
+  "primary_verdict": "improvement_supported",
+  "conditions": [
+    {
+      "condition": "none",
+      "layer": 2,
+      "C": 1.0,
+      "n_train": 2400,
+      "target_eer_mean": 0.365827514370328,
+      "target_eer_sd": 0.002477952502521195,
+      "target_roc_auc_mean": 0.6854917887869133,
+      "target_roc_auc_sd": 0.00698816273972729,
+      "target_pr_auc_fake_mean": 0.5357340722886222,
+      "target_pr_auc_fake_sd": 0.017719643452098296,
+      "target_balanced_accuracy_mean": 0.5050432741442804,
+      "target_balanced_accuracy_sd": 0.0021816723322721355,
+      "target_macro_f1_mean": 0.2829323258699102,
+      "target_macro_f1_sd": 0.004841703271991876,
+      "target_accuracy_mean": 0.3783420917377304,
+      "target_accuracy_sd": 0.0027472851681518253,
+      "target_recall_fake_mean": 0.9992665312570526,
+      "target_recall_fake_sd": 0.0001292760013246444,
+      "target_recall_real_mean": 0.01082001703150829,
+      "target_recall_real_sd": 0.004389044291893072,
+      "source_val_eer_mean": 0.0036666666666666675,
+      "source_val_auc_mean": 0.999948,
+      "target_eer_ci_speaker": [
+        0.2686310988614227,
+        0.4936461971670505
+      ],
+      "target_auc_ci_speaker": [
+        0.5214869530184006,
+        0.7985841888661919
+      ],
+      "delta_eer_vs_none": 0.0,
+      "delta_eer_ci_speaker": [
+        0.0,
+        0.0
+      ],
+      "delta_eer_ci_clip": [
+        0.0,
+        0.0
+      ],
+      "delta_auc_ci_speaker": [
+        0.0,
+        0.0
+      ],
+      "delta_auc_vs_none": 0.0
+    },
+    {
+      "condition": "codec",
+      "layer": 18,
+      "C": 0.1,
+      "n_train": 4800,
+      "target_eer_mean": 0.25428797111261564,
+      "target_eer_sd": 0.007665688477639957,
+      "target_roc_auc_mean": 0.8268250704109531,
+      "target_roc_auc_sd": 0.007591497816819531,
+      "target_pr_auc_fake_mean": 0.7088851904775697,
+      "target_pr_auc_fake_sd": 0.024441254213099162,
+      "target_balanced_accuracy_mean": 0.7351363959230693,
+      "target_balanced_accuracy_sd": 0.002637409352464743,
+      "target_macro_f1_mean": 0.7016966332011831,
+      "target_macro_f1_sd": 0.0063459926831000765,
+      "target_accuracy_mean": 0.7029904444234663,
+      "target_accuracy_sd": 0.007237848702309186,
+      "target_recall_fake_mean": 0.8605280974949222,
+      "target_recall_fake_sd": 0.024082987446271496,
+      "target_recall_real_mean": 0.6097446943512165,
+      "target_recall_real_sd": 0.025064579506646745,
+      "source_val_eer_mean": 0.0050000000000000044,
+      "source_val_auc_mean": 0.9998216666666667,
+      "target_eer_ci_speaker": [
+        0.16834300002537259,
+        0.3795893567920807
+      ],
+      "target_auc_ci_speaker": [
+        0.6903089910241466,
+        0.9015445169375222
+      ],
+      "delta_eer_vs_none": -0.11153954325771237,
+      "delta_eer_ci_speaker": [
+        -0.18101795314179303,
+        -0.05589043328325484
+      ],
+      "delta_eer_ci_clip": [
+        -0.11662432007338153,
+        -0.10573712109334114
+      ],
+      "delta_auc_ci_speaker": [
+        0.06750608373607274,
+        0.21475812624172447
+      ],
+      "delta_auc_vs_none": 0.1413332816240398
+    },
+    {
+      "condition": "noise",
+      "layer": 10,
+      "C": 0.1,
+      "n_train": 4800,
+      "target_eer_mean": 0.17826312010552858,
+      "target_eer_sd": 0.0029788647861810234,
+      "target_roc_auc_mean": 0.8924879524638071,
+      "target_roc_auc_sd": 0.003379245087366647,
+      "target_pr_auc_fake_mean": 0.7646183068204296,
+      "target_pr_auc_fake_sd": 0.010127300133271908,
+      "target_balanced_accuracy_mean": 0.7917756826658318,
+      "target_balanced_accuracy_sd": 0.006736346754534586,
+      "target_macro_f1_mean": 0.7470270492188495,
+      "target_macro_f1_sd": 0.009745484754277806,
+      "target_accuracy_mean": 0.7472754544405634,
+      "target_accuracy_sd": 0.009952449270709056,
+      "target_recall_fake_mean": 0.9653577070638683,
+      "target_recall_fake_sd": 0.006432699003355974,
+      "target_recall_real_mean": 0.6181936582677953,
+      "target_recall_real_sd": 0.0193982859572281,
+      "source_val_eer_mean": 0.004000000000000003,
+      "source_val_auc_mean": 0.9997623333333333,
+      "target_eer_ci_speaker": [
+        0.1323566342941579,
+        0.24430637733951036
+      ],
+      "target_auc_ci_speaker": [
+        0.8352285096501947,
+        0.9304357584406951
+      ],
+      "delta_eer_vs_none": -0.18756439426479943,
+      "delta_eer_ci_speaker": [
+        -0.2704376782258686,
+        -0.11713185956262295
+      ],
+      "delta_eer_ci_clip": [
+        -0.19301377999677427,
+        -0.18198981052206797
+      ],
+      "delta_auc_ci_speaker": [
+        0.12081626547167483,
+        0.3272062443710867
+      ],
+      "delta_auc_vs_none": 0.20699616367689377
+    },
+    {
+      "condition": "channel",
+      "layer": 4,
+      "C": 0.1,
+      "n_train": 4800,
+      "target_eer_mean": 0.17210578992259581,
+      "target_eer_sd": 0.012785372928008111,
+      "target_roc_auc_mean": 0.9065946086244657,
+      "target_roc_auc_sd": 0.012553478954342258,
+      "target_pr_auc_fake_mean": 0.8447483523262882,
+      "target_pr_auc_fake_sd": 0.021961365259839317,
+      "target_balanced_accuracy_mean": 0.6515180778527389,
+      "target_balanced_accuracy_sd": 0.011836539877489075,
+      "target_macro_f1_mean": 0.5507593818604217,
+      "target_macro_f1_sd": 0.01761888436144081,
+      "target_accuracy_mean": 0.5643349381667139,
+      "target_accuracy_sd": 0.014763271938169854,
+      "target_recall_fake_mean": 0.991593319792372,
+      "target_recall_fake_sd": 0.0011270020511982464,
+      "target_recall_real_mean": 0.3114428359131059,
+      "target_recall_real_sd": 0.023266756236956333,
+      "source_val_eer_mean": 0.005333333333333338,
+      "source_val_auc_mean": 0.9997666666666666,
+      "target_eer_ci_speaker": [
+        0.11688732627306436,
+        0.24598737526602482
+      ],
+      "target_auc_ci_speaker": [
+        0.8340134467022576,
+        0.9493404598884084
+      ],
+      "delta_eer_vs_none": -0.1937217244477322,
+      "delta_eer_ci_speaker": [
+        -0.26058926080085437,
+        -0.13149275144448075
+      ],
+      "delta_eer_ci_clip": [
+        -0.19855716749254002,
+        -0.18878195901274272
+      ],
+      "delta_auc_ci_speaker": [
+        0.13607705608083304,
+        0.326222716730369
+      ],
+      "delta_auc_vs_none": 0.22110281983755242
+    },
+    {
+      "condition": "mix",
+      "layer": 20,
+      "C": 0.1,
+      "n_train": 4800,
+      "target_eer_mean": 0.2347676534922941,
+      "target_eer_sd": 0.00555471788919429,
+      "target_roc_auc_mean": 0.8446319425421344,
+      "target_roc_auc_sd": 0.006047864907773965,
+      "target_pr_auc_fake_mean": 0.7277664506482574,
+      "target_pr_auc_fake_sd": 0.021445996551856254,
+      "target_balanced_accuracy_mean": 0.7653640941338407,
+      "target_balanced_accuracy_sd": 0.009959494496241538,
+      "target_macro_f1_mean": 0.7330018872635001,
+      "target_macro_f1_sd": 0.014286628671878892,
+      "target_accuracy_mean": 0.7346465695375354,
+      "target_accuracy_sd": 0.015195860134982914,
+      "target_recall_fake_mean": 0.8851839313924623,
+      "target_recall_fake_sd": 0.018117625884669534,
+      "target_recall_real_mean": 0.6455442568752191,
+      "target_recall_real_sd": 0.03244536010404145,
+      "source_val_eer_mean": 0.006000000000000003,
+      "source_val_auc_mean": 0.9996326666666667,
+      "target_eer_ci_speaker": [
+        0.1678987610242594,
+        0.3320691949465439
+      ],
+      "target_auc_ci_speaker": [
+        0.7475664901519922,
+        0.9071561090253728
+      ],
+      "delta_eer_vs_none": -0.13105986087803392,
+      "delta_eer_ci_speaker": [
+        -0.1857902275742178,
+        -0.06525563986077523
+      ],
+      "delta_eer_ci_clip": [
+        -0.1365454545264415,
+        -0.1253351311427496
+      ],
+      "delta_auc_ci_speaker": [
+        0.07985851334513015,
+        0.240287812546313
+      ],
+      "delta_auc_vs_none": 0.15914015375522106
+    },
+    {
+      "condition": "all",
+      "layer": 20,
+      "C": 0.1,
+      "n_train": 9600,
+      "target_eer_mean": 0.23292872478721158,
+      "target_eer_sd": 0.004127083943024217,
+      "target_roc_auc_mean": 0.8435049733114365,
+      "target_roc_auc_sd": 0.002985515980402695,
+      "target_pr_auc_fake_mean": 0.7392056656630975,
+      "target_pr_auc_fake_sd": 0.00862247971521361,
+      "target_balanced_accuracy_mean": 0.7564035923013658,
+      "target_balanced_accuracy_sd": 0.00882379741052826,
+      "target_macro_f1_mean": 0.7210093819543754,
+      "target_macro_f1_sd": 0.013421858137131162,
+      "target_accuracy_mean": 0.7221015974910056,
+      "target_accuracy_sd": 0.014242511885444736,
+      "target_recall_fake_mean": 0.8902053712480251,
+      "target_recall_fake_sd": 0.015201890353559875,
+      "target_recall_real_mean": 0.6226018133547062,
+      "target_recall_real_sd": 0.03073572188572041,
+      "source_val_eer_mean": 0.004333333333333336,
+      "source_val_auc_mean": 0.9997786666666667,
+      "target_eer_ci_speaker": [
+        0.1667743514557223,
+        0.33370420384451394
+      ],
+      "target_auc_ci_speaker": [
+        0.7438644402302197,
+        0.9079308834237951
+      ],
+      "delta_eer_vs_none": -0.13289878958311643,
+      "delta_eer_ci_speaker": [
+        -0.1900233152693066,
+        -0.06487906431405917
+      ],
+      "delta_eer_ci_clip": [
+        -0.13808491510185286,
+        -0.12738486170217211
+      ],
+      "delta_auc_ci_speaker": [
+        0.07940276155130555,
+        0.23895161506616758
+      ],
+      "delta_auc_vs_none": 0.15801318452452318
+    }
+  ]
+}

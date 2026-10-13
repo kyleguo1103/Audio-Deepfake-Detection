@@ -1,0 +1,99 @@
+{
+  "schema_version": "pilot-0.1",
+  "study_id": "PILOT_LA2019_TO_ITW_AUG_2026-10",
+  "status": "preregistered_pilot_no_results_yet",
+  "purpose": "Feasibility pilot for the supervisor-confirmed direction (controlled audio augmentation for XLS-R cross-domain generalisation). ASVspoof 2019 LA substitutes for DeepSpeak as the source domain because DeepSpeak access is not yet evidenced. Not the final thesis experiment.",
+  "paths": {
+    "data_root": "D:/7841_data",
+    "la_zip": "{data_root}/raw/LA.zip",
+    "itw_zip": "{data_root}/raw/release_in_the_wild.zip",
+    "embedding_dir": "{data_root}/pilot_la_to_itw/embeddings",
+    "output_dir": "{project_dir}/outputs"
+  },
+  "label_contract": {"real": 0, "fake": 1},
+  "source": {
+    "dataset": "ASVspoof 2019 Logical Access (LA)",
+    "archive": "LA.zip from Edinburgh DataShare record 10283/3336 (doi:10.7488/ds/2555)",
+    "train_pool": {"partition": "train", "protocol_suffix": "ASVspoof2019.LA.cm.train.trn.txt", "n_bonafide": 1500, "n_spoof_per_attack": 250, "attacks": ["A01", "A02", "A03", "A04", "A05", "A06"]},
+    "validation": {"partition": "dev", "protocol_suffix": "ASVspoof2019.LA.cm.dev.trl.txt", "n_bonafide": 1000, "n_spoof_total": 1000, "attacks": ["A01", "A02", "A03", "A04", "A05", "A06"]},
+    "label_map": {"bonafide": "real", "spoof": "fake"},
+    "sampling_seed": 2026
+  },
+  "target": {
+    "dataset": "In-the-Wild (Mueller et al., 2022)",
+    "archive": "release_in_the_wild.zip from huggingface.co/datasets/mueller91/In-The-Wild",
+    "label_map": {"bona-fide": "real", "spoof": "fake"},
+    "primary_scope": "all_clips",
+    "core_subset": {"n_per_label": 3000, "seed": 2026, "use_only_if_full_extraction_incomplete": true},
+    "use_for": "final_evaluation_only"
+  },
+  "preprocessing": {
+    "sample_rate_hz": 16000,
+    "mono": true,
+    "trim_silence": {"enabled": true, "top_db": 40.0, "frame_length": 400, "hop_length": 160, "min_kept_seconds": 0.5},
+    "max_seconds": 6.0,
+    "crop_policy": "first_max_seconds_after_trim_no_padding",
+    "input_normalisation": "per_utterance_zero_mean_unit_variance"
+  },
+  "augmentation": {
+    "applied_to": "source_train_only",
+    "level": "waveform_after_trim_and_crop",
+    "global_seed": 7841,
+    "families": {
+      "codec": {"options": [
+        {"encoder": "libmp3lame", "format": "mp3", "bitrates_kbps": [24, 32, 48, 64, 96]},
+        {"encoder": "aac", "format": "adts", "bitrates_kbps": [24, 32, 48, 64, 96]},
+        {"encoder": "libopus", "format": "ogg", "bitrates_kbps": [12, 16, 24, 32, 48]}
+      ]},
+      "noise": {"types": ["white", "pink", "brown"], "snr_db_range": [5.0, 20.0]},
+      "channel": {"subtypes": ["telephone_300_3400_8k", "lowpass", "parametric_eq", "synthetic_reverb"],
+                   "lowpass_cutoff_hz_range": [3000, 7000],
+                   "eq_bands": 3, "eq_gain_db_range": [-8.0, 8.0], "eq_center_hz_range": [200, 6000], "eq_q_range": [0.7, 2.0],
+                   "reverb_rt60_s_range": [0.2, 0.7], "reverb_wet_range": [0.3, 1.0]}
+    },
+    "same_rules_for_real_and_fake": true,
+    "copies_per_family_per_clip": 1
+  },
+  "feature_extractor": {
+    "model_id": "facebook/wav2vec2-large-xlsr-53",
+    "revision": null,
+    "revision_policy": "record transformers config._commit_hash at extraction time",
+    "pooling": "mean_over_time_per_hidden_state",
+    "store_hidden_states": "all_25",
+    "dtype_on_disk": "float16",
+    "batch_size": 1,
+    "shard_size": 500
+  },
+  "conditions": {
+    "none": ["clean"],
+    "codec": ["clean", "codec"],
+    "noise": ["clean", "noise"],
+    "channel": ["clean", "channel"],
+    "mix": ["clean", "mix_one_family_per_clip"],
+    "all": ["clean", "codec", "noise", "channel"]
+  },
+  "primary_comparison": {"treatment": "mix", "control": "none"},
+  "classifier": {"type": "StandardScaler+LogisticRegression", "class_weight": "balanced", "solver": "lbfgs", "max_iter": 3000},
+  "selection": {
+    "uses": "source_validation_only",
+    "seed_used_for_selection": 42,
+    "candidate_layers": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
+    "candidate_C": [0.001, 0.01, 0.1, 1.0],
+    "criterion": "min_validation_log_loss",
+    "tie_break": ["lower_validation_eer", "smaller_C", "smaller_layer"],
+    "threshold": "source_validation_eer_threshold"
+  },
+  "seeds": [42, 1337, 2026],
+  "seed_meaning": "each seed draws a stratified 80% subset of the source train pool; augmented copies follow their parent clip",
+  "train_subset_fraction": 0.8,
+  "evaluation": {
+    "primary_metric": "target_eer",
+    "secondary_metrics": ["target_roc_auc", "balanced_accuracy_at_source_threshold", "macro_f1_at_source_threshold", "pr_auc_fake_positive"],
+    "bootstrap_reps": 1000,
+    "bootstrap_types": ["speaker_cluster", "clip_stratified"],
+    "primary_ci": "speaker_cluster",
+    "bootstrap_seed": 7841,
+    "decision_rule": "Improvement supported only if the 95% speaker-cluster bootstrap CI of (EER_mix - EER_none), averaged over seeds, lies entirely below 0; harm if entirely above 0; otherwise inconclusive."
+  },
+  "diagnostics": ["source_validation_in_domain_metrics", "per_family_ablation", "all_families", "duration_silence_shortcut_baseline", "layer_profile_exploratory_after_primary"]
+}

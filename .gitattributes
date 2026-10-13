@@ -1,0 +1,3 @@
+# Keep every file byte-for-byte as committed. The frozen manifests and results were written with CRLF
+# line endings and are verified by SHA-256, so line-ending conversion would break the hash checks.
+* -text

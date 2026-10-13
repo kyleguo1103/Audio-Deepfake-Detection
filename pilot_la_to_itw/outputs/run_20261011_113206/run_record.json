@@ -1,0 +1,66 @@
+{
+  "created_at_utc": "2026-10-11T01:37:32+00:00",
+  "study_id": "PILOT_LA2019_TO_ITW_AUG_2026-10",
+  "config_sha256": "a26f7873f8b54d9224894bae0ab2ccf7b6588e3a1cc42b51e90a44b859f39782",
+  "manifest_sha256": {
+    "source_train": "00ef68188a1ea867b0615866053b534397a6e49f56fcbb270b4873385195f653",
+    "source_val": "5b2d269aa98ac268df4756e6c18819d985487e198f8ca35275fada8ea3b1de02",
+    "target": "e823c59b6cf584beeccc4978cf19a78625ff69d0c6d34fa75ff34afa76e4af11"
+  },
+  "target_scope": "all_clips",
+  "encoder": {
+    "amp_fp16": true,
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "model_id": "facebook/wav2vec2-large-xlsr-53",
+    "resolved_commit": "c3f9d884181a224a6ac87bf8885c84d1cff3384f",
+    "torch": "2.4.1+cu118",
+    "transformers": "4.44.2"
+  },
+  "fake_model_self_test": false,
+  "n_source_pool": 3000,
+  "n_source_val": 2000,
+  "n_target": 31779,
+  "seeds": [
+    42,
+    1337,
+    2026
+  ],
+  "selection": {
+    "none": {
+      "layer": 2,
+      "C": 1.0
+    },
+    "codec": {
+      "layer": 18,
+      "C": 0.1
+    },
+    "noise": {
+      "layer": 10,
+      "C": 0.1
+    },
+    "channel": {
+      "layer": 4,
+      "C": 0.1
+    },
+    "mix": {
+      "layer": 20,
+      "C": 0.1
+    },
+    "all": {
+      "layer": 20,
+      "C": 0.1
+    }
+  },
+  "bootstrap_reps": 1000,
+  "codec_encoders_available": [
+    "aac",
+    "libmp3lame",
+    "libopus"
+  ],
+  "python": "3.11.17",
+  "platform": "Windows-10-10.0.22000-SP0",
+  "numpy": "1.26.4",
+  "scikit_learn": "1.5.2",
+  "minutes": 5.5
+}

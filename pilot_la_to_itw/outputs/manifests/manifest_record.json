@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-10-11T00:20:55+00:00",
+  "study_id": "PILOT_LA2019_TO_ITW_AUG_2026-10",
+  "config_sha256": "a26f7873f8b54d9224894bae0ab2ccf7b6588e3a1cc42b51e90a44b859f39782",
+  "archives": {
+    "la": {
+      "path": "D:\\7841\\LA",
+      "type": "directory",
+      "bytes": null,
+      "sha256": null
+    },
+    "itw": {
+      "path": "D:\\7841\\raw\\release_in_the_wild.zip",
+      "type": "zip",
+      "bytes": 8161489023,
+      "sha256": "46665f30a6758b45642c659c7e0e80da2ba3d121b064716824a56a010ddf9e1a",
+      "official_sha256": "46665f30a6758b45642c659c7e0e80da2ba3d121b064716824a56a010ddf9e1a",
+      "official_source": "huggingface.co/datasets/mueller91/In-The-Wild (LFS oid)",
+      "official_sha256_match": true
+    }
+  },
+  "source_evidence": {
+    "la": {
+      "source_train": {
+        "protocol": "ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt",
+        "protocol_sha256": "65a289e4009400b42bb4f1e47ac60938d93f7f595452d1f220d35defc3de8ab8",
+        "protocol_rows": 25380,
+        "labels": {
+          "bonafide": 2580,
+          "spoof": 22800
+        },
+        "audio_files_in_folder": 25380,
+        "protocol_files_missing": 0
+      },
+      "source_val": {
+        "protocol": "ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trl.txt",
+        "protocol_sha256": "2fedaebf1ba3ae1a9bb7d3ec916804ac237b4eee063a27fa92e6549f03d129c7",
+        "protocol_rows": 24844,
+        "labels": {
+          "bonafide": 2548,
+          "spoof": 22296
+        },
+        "audio_files_in_folder": 24986,
+        "protocol_files_missing": 0
+      }
+    },
+    "itw": {
+      "meta_csv": "release_in_the_wild/meta.csv",
+      "meta_sha256": "2e404150eff3cf171b766da81013a93248cbb219682fff420bbadb6b86a18795",
+      "rows": 31779,
+      "labels": {
+        "spoof": 11816,
+        "bona-fide": 19963
+      }
+    }
+  },
+  "summary": {
+    "source_train": {
+      "n": 3000,
+      "labels": {
+        "real": 1500,
+        "fake": 1500
+      },
+      "speakers": 20,
+      "attacks": {
+        "bonafide": 1500,
+        "A01": 250,
+        "A02": 250,
+        "A03": 250,
+        "A04": 250,
+        "A05": 250,
+        "A06": 250
+      },
+      "core_subset_labels": null
+    },
+    "source_val": {
+      "n": 2000,
+      "labels": {
+        "real": 1000,
+        "fake": 1000
+      },
+      "speakers": 20,
+      "attacks": {
+        "bonafide": 1000,
+        "A01": 167,
+        "A02": 167,
+        "A03": 167,
+        "A04": 167,
+        "A05": 166,
+        "A06": 166
+      },
+      "core_subset_labels": null
+    },
+    "target": {
+      "n": 31779,
+      "labels": {
+        "fake": 11816,
+        "real": 19963
+      },
+      "speakers": 54,
+      "attacks": null,
+      "core_subset_labels": {
+        "fake": 3000,
+        "real": 3000
+      }
+    }
+  },
+  "speaker_disjoint_source_train_vs_val": true,
+  "duplicate_audio_hashes_across_all_sets": 0,
+  "identical_audio_shared_by_source_and_target": 0,
+  "manifest_sha256": {
+    "source_train": "00ef68188a1ea867b0615866053b534397a6e49f56fcbb270b4873385195f653",
+    "source_val": "5b2d269aa98ac268df4756e6c18819d985487e198f8ca35275fada8ea3b1de02",
+    "target": "e823c59b6cf584beeccc4978cf19a78625ff69d0c6d34fa75ff34afa76e4af11"
+  },
+  "note": "Frozen before any embedding or result exists. Later steps verify these hashes and read audio from the paths above."
+}
