@@ -1,0 +1,78 @@
+
+=== DIRECTORY TREE (max depth 3, source files only) ===
+app.py
+detector.py
+docs
+docs\codebase
+docs\codebase\.codebase-scan.txt
+docs\codebase\ARCHITECTURE.md
+docs\codebase\CONCERNS.md
+docs\codebase\CONVENTIONS.md
+docs\codebase\INTEGRATIONS.md
+docs\codebase\STACK.md
+docs\codebase\STRUCTURE.md
+docs\codebase\TESTING.md
+plots.py
+README_zh.md
+requirements_dashboard.txt
+run_dashboard.bat
+tests
+tests\test_detector_core.py
+
+=== STACK DETECTION (manifest files) ===
+No recognized manifest files found in project root.
+
+=== ENTRY POINTS ===
+Found: app.py
+
+=== LINTING AND FORMATTING CONFIG ===
+No linting or formatting config files found in project root.
+
+=== ENVIRONMENT VARIABLE TEMPLATES ===
+No .env.example or .env.template found. Identify required environment variables by searching the code and config for environment variable reads.
+
+=== TODO / FIXME / HACK (production code only, test dirs excluded) ===
+None found.
+
+=== GIT RECENT COMMITS (last 20) ===
+No commits found.
+
+=== HIGH-CHURN FILES (last 90 days, top 20) ===
+None found.
+
+=== MONOREPO SIGNALS ===
+No monorepo signals detected.
+
+=== CODE METRICS ===
+Total files scanned: 15
+Total lines of code: 1234
+
+Files by language:
+  Other: 11
+  Python: 4
+
+Top 10 largest files:
+app.py: 25.5KB
+detector.py: 22.0KB
+plots.py: 6.8KB
+docs\codebase\CONCERNS.md: 6.2KB
+README_zh.md: 6.0KB
+docs\codebase\ARCHITECTURE.md: 4.2KB
+docs\codebase\STACK.md: 3.7KB
+docs\codebase\INTEGRATIONS.md: 3.4KB
+tests\test_detector_core.py: 3.2KB
+docs\codebase\TESTING.md: 3.1KB
+
+=== CI/CD PIPELINES ===
+No CI/CD pipelines detected.
+
+=== CONTAINERS & ORCHESTRATION ===
+No containerization configs detected.
+
+=== SECURITY & COMPLIANCE ===
+No security configs detected.
+
+=== PERFORMANCE & TESTING ===
+No performance testing configs detected.
+
+=== SCAN COMPLETE ===

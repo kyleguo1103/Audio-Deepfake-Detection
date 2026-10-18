@@ -1,3 +1,7 @@
 # Keep every file byte-for-byte as committed. The frozen manifests and results were written with CRLF
 # line endings and are verified by SHA-256, so line-ending conversion would break the hash checks.
 * -text
+
+# Dashboard source and documentation are normal text files. Frozen result files keep their exact bytes.
+dashboard/** text eol=lf
+dashboard/*.bat text eol=crlf

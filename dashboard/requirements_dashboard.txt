@@ -1,0 +1,5 @@
+# Dashboard extras for the XLS-R detector demo.
+# Install into the pilot's "xlsr" conda env, which already has torch 2.4.1, transformers 4.44.2,
+# scikit-learn 1.5.2, numpy 1.26.4, soundfile, scipy, matplotlib and imageio-ffmpeg:
+#   pip install -r requirements_dashboard.txt
+gradio>=5.20,<6

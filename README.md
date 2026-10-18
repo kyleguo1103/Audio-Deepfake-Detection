@@ -35,6 +35,11 @@ LICENSE                 MIT licence for the code
 scripts/
   verify_results.py     recomputes the reported numbers from the committed raw results (no data needed)
   make_paper_figure.py  redraws the paper's layer-profile figure
+dashboard/
+  app.py                local Gradio interface for single and batch detection
+  detector.py           pilot-backed detection engine and integration self-check
+  plots.py              waveform, model-comparison and layer-profile figures
+  tests/                data-free core tests
 pilot_la_to_itw/
   PREREGISTRATION.md    frozen design (with addenda A and B, both written before any result)
   config/pilot_config.json   frozen configuration, SHA-256 a26f7873...39782
@@ -56,6 +61,24 @@ This checks the configuration and manifest hashes, recomputes every target and s
 from the saved logits, re-runs the pre-registered paired speaker-cluster bootstrap with the frozen seed,
 and recomputes the matched-layer averages. It prints `ALL CHECKS PASSED` on the committed results.
 A full re-run from audio is described in [REPRODUCE.md](REPRODUCE.md).
+
+## Interactive dashboard
+
+The [dashboard](dashboard/) provides a local demonstration of the same frozen pilot pipeline. It can
+analyse an uploaded or recorded clip, compare all six augmentation conditions, visualise how the
+decision changes across XLS-R layers, score a batch to CSV, and display the committed pilot results.
+
+```bash
+cd dashboard
+pip install -r requirements_dashboard.txt
+python -m unittest discover -s tests -v
+python detector.py --check   # requires the local model/data artefacts described in dashboard/README.md
+python app.py
+```
+
+No model weights, fitted caches, embeddings or audio are committed. The dashboard is a reproducibility
+and presentation layer for the pilot, not an independent validation result or a forensic tool. See
+[dashboard/README.md](dashboard/README.md) for setup, evidence status and remote-sharing precautions.
 
 ## Where each reported number comes from
 
@@ -81,7 +104,8 @@ will never be uploaded here.
 ## Status and next steps
 
 This is a pilot that uses ASVspoof 2019 LA as a substitute source while access to the planned source
-dataset is pending. Planned next: a new pre-registered confirmatory study with a target-independent
+dataset is pending. The interactive dashboard and data-free core tests were added on 18 October 2026.
+Planned next: a new pre-registered confirmatory study with a target-independent
 layer policy that tests additive noise as the hypothesis, and validation on an independent
 source-target pair.
 

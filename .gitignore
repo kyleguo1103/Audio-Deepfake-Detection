@@ -15,11 +15,14 @@ venv/
 *.pt
 *.bin
 *.safetensors
+*.pkl
 hf_cache/
 pilot_data/
 embeddings/
+demo_cache/
 LA/
 raw/
+gradio_cached_examples/
 
 # Local secrets
 .env

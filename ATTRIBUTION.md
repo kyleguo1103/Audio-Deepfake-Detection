@@ -9,6 +9,11 @@ author's laptop (NVIDIA RTX 3060 Laptop GPU) on 11 October 2026.
 An AI assistant (Claude, Anthropic) helped draft the code and documentation; the author ran every
 experiment, checked the results and is responsible for the content.
 
+OpenAI Codex assisted on 18 October 2026 with integrating the author's dashboard into this repository,
+making its path discovery portable across the thesis-workspace and repository layouts, adding
+data-free core tests, and preparing maintainer documentation. The author requested these changes,
+verified the integration against the frozen pilot outputs and remains responsible for the repository.
+
 ## Relationship to prior work in the same group
 
 This study builds on the research direction of U. Thani, G. Singh and P. Singh, "Unsupervised domain
@@ -34,6 +39,8 @@ statistical adaptation.
 | scikit-learn 1.5.2 | standardisation and logistic regression | BSD-3-Clause |
 | NumPy, SciPy | numerics, filters, resampling, ranking | BSD-3-Clause |
 | Matplotlib | figures | Matplotlib licence (PSF-based) |
+| Gradio 5.50.0 | local interactive dashboard | Apache-2.0 |
+| pandas 2.3.3 | dashboard tables and CSV export | BSD-3-Clause |
 | soundfile, tqdm | audio I/O, progress bars | BSD-3-Clause, MIT/MPL-2.0 |
 | imageio-ffmpeg | bundled ffmpeg binary for decoding and codec augmentation | BSD-2-Clause (ffmpeg binary: LGPL/GPL) |
 
