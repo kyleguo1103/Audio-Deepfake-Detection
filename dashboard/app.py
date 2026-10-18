@@ -389,7 +389,8 @@ ABOUT_MD = """
 - The noise result is exploratory (post hoc) and still needs a confirmatory run.
 - A research prototype for discussion. Not a forensic tool, and not evidence about any real recording.
 
-Code and raw results: github.com/kyleguo1103/Audio-Deepfake-Detection (tag v0.1-pilot).
+Code and raw results: github.com/kyleguo1103/Audio-Deepfake-Detection
+(pilot release: tag v0.1-pilot; dashboard: main branch).
 """
 
 
