@@ -4,20 +4,18 @@ This local Gradio dashboard turns the frozen `run_20261011_113206` pilot into an
 It reuses the repository's preprocessing, XLS-R encoder and logistic-regression probe code rather than
 implementing a separate model.
 
-## What it shows
+## Three audience-facing pages
 
-- Upload or record one audio clip and view the selected model's `REAL`/`FAKE` decision.
-- Draw a labelled clip from the frozen In-the-Wild target manifest when the local archive is available.
-- Compare the six pilot conditions: no augmentation, codec, additive noise, channel, mix and all families.
-- Inspect how the same clip's score changes across 13 XLS-R hidden-state indices for no augmentation,
-  noise and mix.
-- View the waveform, spectrogram, trimmed silence and any audio beyond the six-second model window.
-- Score several files and download the results as CSV.
-- Read the pre-registered and exploratory pilot results from the committed raw outputs.
+- **Try the detector:** upload, record or draw a labelled In-the-Wild example; view the decision,
+  analysed audio region, six training-version comparison and layer profile.
+- **Understand the elements:** plain-language cards explain each augmentation family, what an XLS-R
+  layer means and how to read every displayed number.
+- **Research evidence:** separates the pre-registered pilot comparison from the fixed-layer post hoc
+  analysis and states the limitations before exposing the full tables and figures.
 
 The default verdict uses the pre-registered `mix` condition, but all six models are always scored.
-The displayed **fake score** is `sigmoid(logit - source-validation threshold)`: 0.5 is the decision
-boundary, not a calibrated probability.
+The displayed **decision score** is `sigmoid(logit - source-validation threshold)`: 0.5 is the decision
+boundary. It is deliberately not labelled as a probability or confidence value.
 
 ## Required local artefacts
 

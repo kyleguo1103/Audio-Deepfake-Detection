@@ -1,0 +1,140 @@
+{
+  "classification": "EXPLORATORY_ERROR_ANALYSIS",
+  "source_run": "exploratory_followup_20261104_004109",
+  "conditions": [
+    "none",
+    "all",
+    "channel",
+    "codec",
+    "mix",
+    "noise"
+  ],
+  "seeds": [
+    42,
+    1337,
+    2026
+  ],
+  "best_mean_eer_condition": "mix",
+  "overall": {
+    "none": {
+      "error_rate_mean": 0.5020370370370371,
+      "real_false_positive_rate_mean": 0.520392749244713,
+      "fake_false_negative_rate_mean": 0.4509803921568627,
+      "eer": 0.4882052518892754,
+      "roc_auc": 0.49204515643115254,
+      "balanced_accuracy": 0.5143134292992121,
+      "recall_fake": 0.5490196078431372,
+      "recall_real": 0.47960725075528704
+    },
+    "all": {
+      "error_rate_mean": 0.3375925925925926,
+      "real_false_positive_rate_mean": 0.17044310171198387,
+      "fake_false_negative_rate_mean": 0.8025210084033613,
+      "eer": 0.47082518808127477,
+      "roc_auc": 0.5402380740815964,
+      "balanced_accuracy": 0.5135179449423274,
+      "recall_fake": 0.19747899159663865,
+      "recall_real": 0.8295568982880162
+    },
+    "channel": {
+      "error_rate_mean": 0.3837037037037037,
+      "real_false_positive_rate_mean": 0.27366565961732126,
+      "fake_false_negative_rate_mean": 0.6897759103641455,
+      "eer": 0.4831149982651672,
+      "roc_auc": 0.5243463699679268,
+      "balanced_accuracy": 0.5182792150092665,
+      "recall_fake": 0.31022408963585435,
+      "recall_real": 0.7263343403826789
+    },
+    "codec": {
+      "error_rate_mean": 0.395,
+      "real_false_positive_rate_mean": 0.26963746223564955,
+      "fake_false_negative_rate_mean": 0.7436974789915967,
+      "eer": 0.4687814702920443,
+      "roc_auc": 0.5175672988228525,
+      "balanced_accuracy": 0.4933325293863769,
+      "recall_fake": 0.25630252100840334,
+      "recall_real": 0.7303625377643505
+    },
+    "mix": {
+      "error_rate_mean": 0.3368518518518518,
+      "real_false_positive_rate_mean": 0.16817724068479356,
+      "fake_false_negative_rate_mean": 0.8060224089635856,
+      "eer": 0.4635473524757335,
+      "roc_auc": 0.5382694618632952,
+      "balanced_accuracy": 0.5129001751758105,
+      "recall_fake": 0.19397759103641454,
+      "recall_real": 0.8318227593152064
+    },
+    "noise": {
+      "error_rate_mean": 0.4685185185185185,
+      "real_false_positive_rate_mean": 0.4478851963746224,
+      "fake_false_negative_rate_mean": 0.5259103641456583,
+      "eer": 0.47646762632545475,
+      "roc_auc": 0.5104365008843417,
+      "balanced_accuracy": 0.5131022197398597,
+      "recall_fake": 0.4740896358543418,
+      "recall_real": 0.5521148036253777
+    }
+  },
+  "always_wrong_counts": {
+    "none": {
+      "all_three_seeds": 830,
+      "majority_of_seeds": 900
+    },
+    "all": {
+      "all_three_seeds": 539,
+      "majority_of_seeds": 608
+    },
+    "channel": {
+      "all_three_seeds": 576,
+      "majority_of_seeds": 694
+    },
+    "codec": {
+      "all_three_seeds": 624,
+      "majority_of_seeds": 709
+    },
+    "mix": {
+      "all_three_seeds": 509,
+      "majority_of_seeds": 603
+    },
+    "noise": {
+      "all_three_seeds": 702,
+      "majority_of_seeds": 834
+    }
+  },
+  "fake_provider_false_negative_rates": {
+    "none": {
+      "elevenlabs": 0.6856540084388185,
+      "playht": 0.31856540084388185,
+      "speechify": 0.35000000000000003
+    },
+    "all": {
+      "elevenlabs": 0.9177215189873418,
+      "playht": 0.8016877637130801,
+      "speechify": 0.6895833333333332
+    },
+    "channel": {
+      "elevenlabs": 0.8459915611814347,
+      "playht": 0.6476793248945147,
+      "speechify": 0.5770833333333333
+    },
+    "codec": {
+      "elevenlabs": 0.890295358649789,
+      "playht": 0.6772151898734178,
+      "speechify": 0.6645833333333334
+    },
+    "mix": {
+      "elevenlabs": 0.9451476793248945,
+      "playht": 0.7827004219409283,
+      "speechify": 0.6916666666666668
+    },
+    "noise": {
+      "elevenlabs": 0.7594936708860759,
+      "playht": 0.38396624472573837,
+      "speechify": 0.4354166666666666
+    }
+  },
+  "score_correlation_none_vs_best": 0.8945485438076325,
+  "restricted_output_warning": "hard_cases_LOCAL_RESTRICTED.csv contains DeepSpeak sample identifiers and must not be uploaded publicly."
+}

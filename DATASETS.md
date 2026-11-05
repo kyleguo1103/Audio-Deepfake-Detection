@@ -33,6 +33,18 @@ No audio is stored in this repository. Obtain each item from its official source
 - **Cite:** A. Conneau *et al.*, "Unsupervised cross-lingual representation learning for speech
   recognition," in *Proc. Interspeech*, 2021, pp. 2426–2430.
 
+## DeepSpeak v2.0 (restricted follow-up target)
+
+- **Use here:** 1,800 eligible clips from the official test identities (1,324 real and 476 fake), used
+  only for the fixed-layer final evaluation. No DeepSpeak label was used for training, layer selection,
+  regularisation selection, thresholding or calibration.
+- **Obtain:** request gated access from `faridlab/deepspeak_v2` on Hugging Face and accept the dataset licence.
+- **Revision:** the evaluated dataset commit is recorded in
+  `confirm_la_to_deepspeak/outputs/confirmatory/summary.json`.
+- **Restriction:** do not upload or redistribute the media, raw annotations, derived target manifest,
+  embeddings or sample-level predictions. See `confirm_la_to_deepspeak/DATA_RESTRICTIONS.md`.
+- **Cite:** the DeepSpeak paper and dataset card linked from the official Hugging Face repository.
+
 ## Derived files included in this repository
 
 | Files | Content | Licence |
@@ -40,10 +52,11 @@ No audio is stored in this repository. Obtain each item from its official source
 | `pilot_la_to_itw/outputs/manifests/source_*.csv` | ASVspoof clip IDs, labels, speaker and attack IDs, SHA-256 of each selected clip | ODC-By (derived from ASVspoof 2019) |
 | `pilot_la_to_itw/outputs/manifests/target_itw.csv`, `outputs/run_*/predictions_target.csv` | In-the-Wild clip IDs, labels, speaker names from `meta.csv`, SHA-256, model logits | CC BY-SA 4.0 (derived from In-the-Wild) |
 | `outputs/run_*/predictions_source_validation.csv` | ASVspoof clip IDs, labels, model logits | ODC-By |
+| `confirm_la_to_deepspeak/outputs/` | Public-safe aggregate DeepSpeak metrics, intervals, verification reports and figures | Free to reuse with attribution; underlying gated data are not redistributed |
 | Aggregate metrics, bootstrap results, figures | Numbers computed in this study | Free to reuse with attribution to this repository and the datasets above |
 
 ## Not included
 
 - Any audio, augmented audio, XLS-R embeddings or model weights.
-- Datasets that are not part of this pilot. Restricted datasets such as DeepSpeak, if used in later
-  studies, will be documented here with access instructions only and never uploaded.
+- DeepSpeak media, raw annotations, target manifests, embeddings, acquisition ledgers, per-identity
+  tables or sample-level predictions.

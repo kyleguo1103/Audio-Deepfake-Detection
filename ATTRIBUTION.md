@@ -14,6 +14,10 @@ making its path discovery portable across the thesis-workspace and repository la
 data-free core tests, and preparing maintainer documentation. The author requested these changes,
 verified the integration against the frozen pilot outputs and remains responsible for the repository.
 
+OpenAI Codex also assisted in November 2026 with packaging the author's fixed-layer DeepSpeak
+implementation, aggregate outputs and explanatory dashboard changes for public release. The author
+ran the experiments, reviewed the evidence boundary and remains responsible for every claim.
+
 ## Relationship to prior work in the same group
 
 This study builds on the research direction of U. Thani, G. Singh and P. Singh, "Unsupervised domain
@@ -27,7 +31,8 @@ statistical adaptation.
   families with identical rules for both classes), the pre-registered design and decision rule, the
   frozen manifests with per-clip SHA-256, layer and regularisation selection on source validation only,
   the paired speaker-cluster bootstrap, the duration/silence shortcut diagnostic, the post hoc
-  fixed-layer analysis and the verification scripts.
+  fixed-layer analysis, the DeepSpeak fixed-layer confirmation and identity-cluster uncertainty design,
+  the post-confirmation error analysis, and the verification scripts.
 - Results reported by Thani *et al.* are **not** reproduced or claimed here.
 
 ## Third-party software (used as dependencies, not copied)
@@ -49,6 +54,7 @@ statistical adaptation.
 - XLS-R-53: A. Conneau *et al.*, Proc. Interspeech 2021; `facebook/wav2vec2-large-xlsr-53` (Apache-2.0).
 - ASVspoof 2019 LA: X. Wang *et al.*, Computer Speech & Language 64, 2020; doi:10.7488/ds/2555 (ODC-By).
 - In-the-Wild: N. M. Müller *et al.*, Proc. Interspeech 2022; huggingface.co/datasets/mueller91/In-The-Wild (CC BY-SA 4.0).
+- DeepSpeak v2.0: gated dataset `faridlab/deepspeak_v2`; cite the paper and licence linked from its official dataset card.
 - Silence trimming follows the shortcut reported by N. M. Müller *et al.*, "Speech is silver, silence is
   golden: What do ASVspoof-trained models really learn?," Proc. ASVspoof 2021 Workshop.
 

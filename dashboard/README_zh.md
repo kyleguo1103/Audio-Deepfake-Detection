@@ -4,16 +4,17 @@
 
 论文工作区中旧的 `..\audio_deepfake_demo.py`（wav2vec2-base + 合成数据）没有改动；公开仓库不包含该旧 demo。
 
-## 四个页面
+## 三个页面
 
 | 页面 | 内容 |
 |---|---|
-| **Detect** | 上传或现场录音，或者从 In-the-Wild 随机抽一条（可按真/假、说话人筛选）。显示判定、伪造分数、波形+频谱（灰色=被裁掉的静音，黄色斜线=超过 6 秒没分析的部分）、六个模型的对比、以及 13 个层各自的判定。抽 In-the-Wild 时还会显示真实标签和试点当时记录的分数。 |
-| **Batch** | 一次拖入多条音频，出表格，可下载 CSV。 |
-| **Pilot results** | 预登记结果表、同层比较表、试点的图。 |
-| **About** | 检测器怎么训练的、怎么看界面、局限。 |
+| **Try the detector** | 上传或现场录音，或者从 In-the-Wild 抽一条有标签的例子。主区域只显示判定、0.5 决策线、六个训练版本的一致性、被分析的音频区域和逐层变化。原始 logit、阈值、C 与 EER 放在折叠的技术细节中。 |
+| **Understand the elements** | 用生活化例子解释 No augmentation、Codec、Noise、Channel、Mix、All，以及 XLS-R 早期、中期、后期处理阶段的大致含义。 |
+| **Research evidence** | 分开显示预登记结果、同层探索性结果、局限和下一步；完整表格与图片默认折叠。 |
 
-六个模型 = 试点的六个条件，各自用源域验证选出的层：No augmentation（第 2 层）、Codec（18）、Noise（10）、Channel（4）、Mix（20，预登记处理组，默认用它出判定）、All（20）。下拉框可以换成任一模型出判定，其他模型的分数始终都会显示。
+六个“训练版本”= 同一检测器设计的六种训练数据条件，各自用源域验证选出的层：No augmentation（第 2 层）、Codec（18）、Noise（10）、Channel（4）、Mix（20，预登记处理组，默认用它出判定）、All（20）。这样命名是为了避免观众误以为它们是六个完全独立的检测系统。下拉框可以切换主判定，其他版本仍用于一致性比较。
+
+界面中的 **Decision score** = `sigmoid(logit − threshold)`。0.5 是固定的决策线，低于 0.5 在 real 一侧，高于或等于 0.5 在 fake 一侧。这个数是为了直观显示相对于决策线的位置，不是“伪造概率”或校准置信度。
 
 ## 第一次使用（约 5–10 分钟）
 
@@ -28,13 +29,13 @@ set HF_HOME=%PILOT_DATA_ROOT%\hf_cache
 python detector.py --check
 ```
 
-也可以直接使用 `python detector.py --data-root 你的数据目录 --check`。模型已缓存且会议室网络不稳定时，
+也可以使用 `python detector.py --data-root 你的本地数据目录 --check`。模型已缓存且会议室网络不稳定时，
 先设置 `set HF_HUB_OFFLINE=1`。
 
 `--check` 会做三件事：
 
 1. 用 pilot 配置中 `data_root` 下的 `pilot_la_to_itw\embeddings` 缓存训练/准备 6 个主模型入口和 3 个条件 × 13 层的逐层入口，并把缓存存到同一数据根目录的 `demo_cache\`。相同的 condition、layer 和 C 会复用已拟合模型。只有第一次需要，之后几秒就能启动。
-2. 从 `HF_HOME` 加载已缓存的 XLS-R；未缓存时 Transformers 会尝试从 Hugging Face 下载公开模型。
+2. 从 `HF_HOME` 加载 XLS-R；未缓存时 Transformers 会尝试从 Hugging Face 下载公开模型。
 3. 随机抽 5 条 In-the-Wild，把现场算出的分数和试点 `predictions_target.csv` 里记录的分数对比。最后应看到 `CHECK PASSED`。
 
 ## 启动
@@ -54,11 +55,11 @@ python detector.py --check
 
 ## 给导师演示的建议顺序
 
-1. **Detect → Random In-the-Wild clip → True label 选 Fake → Draw and analyse**：展示判定、真实标签、以及“现场分数与试点记录一致”，说明整个流程可复现。
-2. 看下面的 **Score at every XLS-R layer**：同一条音频在不同层可能一会儿判真、一会儿判假，正好对应论文里的选层混杂问题。
-3. 再抽几条 **Real**：可以看到 No augmentation（第 2 层）几乎把所有 In-the-Wild 都判成假（试点里它的 balanced accuracy 只有 0.505），而 Noise / Mix 好很多。
-4. 用 **麦克风** 录一句自己的话，现场检测。
-5. 需要数字时切到 **Pilot results**。
+1. **Try the detector → Known fake → Choose and analyse example**：先讲 0.5 决策线，再说明已知标签只用于检查结果，没有用于训练。
+2. 看六个横条：它们是“同一设计、不同训练音频”，不是六个独立模型。模型不一致说明跨域输入很困难，并不代表多数票一定正确。
+3. 看逐层曲线：layer 是 XLS-R 的处理阶段，不是音频片段；同一条音频会因为读取阶段不同而跨过决策线。
+4. 切到 **Understand the elements**，用六张卡片解释增强条件，再用 early / middle / later 三段图解释层。
+5. 切到 **Research evidence**，只强调 13.1 pp 受选层混杂影响，以及 noise 的 −4.0 pp 仍是探索性发现。
 
 ## 需要知道的局限
 
@@ -73,10 +74,10 @@ python detector.py --check
 |---|---|
 | 装完 gradio 后 transformers 或 numpy 报错 | `pip install transformers==4.44.2 numpy==1.26.4` 恢复试点版本 |
 | 会议室没网，启动卡在加载模型 | 启动前 `set HF_HUB_OFFLINE=1` |
-| 顶部显示 “In-the-Wild unavailable” | 检查 pilot 配置记录的 In-the-Wild 压缩包路径；其他功能不受影响 |
+| 顶部显示 “Examples unavailable” | 检查 pilot 配置中记录的 In-the-Wild 压缩包路径；其他功能不受影响 |
 | 顶部显示 “Device: cpu” | `python -c "import torch; print(torch.cuda.is_available())"` 应为 True；否则按试点 RUN_GUIDE 重装 cu118 版 torch |
 | `--check` 显示 CHECK WARNING | 现场分数和试点记录差得较多，把命令行输出发给我 |
-| 显示 “Missing source embeddings” | `data_root\pilot_la_to_itw\embeddings` 被移动或删除；dashboard 需要试点第 2 步的特征 |
+| 显示 “Missing source embeddings” | `PILOT_DATA_ROOT\pilot_la_to_itw\embeddings` 被移动或删除；dashboard 需要试点第 2 步的特征 |
 
 ## 文件
 
@@ -88,4 +89,4 @@ python detector.py --check
 | `run_dashboard.bat` | 一键启动（自动激活 `xlsr` 环境） |
 | `requirements_dashboard.txt` | 额外依赖（只有 gradio） |
 
-dashboard 只读取仓库的 `pilot_la_to_itw`（或论文工作区中的同名试点文件夹），不会修改其中的结果文件。
+dashboard 只读取试点文件夹，不会修改其中的任何结果文件。

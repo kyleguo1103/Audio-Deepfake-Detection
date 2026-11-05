@@ -1,13 +1,9 @@
 """XLS-R Audio Deepfake Detector - dashboard demo (REIT7841, Jingkai Guo).
 
 Runs the detector from the ASVspoof 2019 LA -> In-the-Wild pilot (run_20261011_113206) behind a local
-Gradio dashboard:
-
-  Detect         upload or record a clip, or draw a random In-the-Wild clip with its true label;
-                 verdict, waveform + spectrogram, all six models side by side, and the score at every layer
-  Batch          score many files at once and download the table as CSV
-  Pilot results  the pre-registered and matched-layer results with the run's figures
-  About          what the detector is, how it was trained, and its limits
+Gradio dashboard.  The audience-facing view is deliberately small: try one clip, understand the
+decision, then inspect the research evidence.  Raw logits and tuning values remain available inside
+closed technical-detail panels.
 
 Usage (Anaconda Prompt, conda env "xlsr"):
     python app.py                 # opens http://127.0.0.1:7860
@@ -78,6 +74,10 @@ CSS = """
 .chip {font-size:.78rem; padding:3px 9px; border-radius:999px; border:1px solid var(--border-color-primary); white-space:nowrap}
 .chip.ok {border-color:#1E8A4C; color:#1E8A4C}
 .chip.warn {border-color:#B7791F; color:#B7791F}
+.journey {display:grid; grid-template-columns:repeat(4, minmax(130px, 1fr)); gap:8px; margin:8px 0 14px}
+.journey div {border:1px solid var(--border-color-primary); border-radius:10px; padding:10px 12px; background:var(--background-fill-secondary)}
+.journey b {display:block; color:#3566D6; font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px}
+.journey span {font-size:.9rem; line-height:1.35}
 .vd {border-radius:12px; padding:16px 18px; border:1px solid var(--border-color-primary)}
 .vd.fake {background:rgba(194,65,45,.07); border-color:rgba(194,65,45,.45)}
 .vd.real {background:rgba(30,138,76,.07); border-color:rgba(30,138,76,.45)}
@@ -99,8 +99,32 @@ CSS = """
 .vd-note {margin-top:12px; font-size:.84rem; line-height:1.5}
 .vd-truth {margin-top:12px; padding:8px 10px; border-radius:8px; font-size:.88rem; border:1px dashed var(--border-color-primary)}
 .vd-truth.hit {border-color:#1E8A4C} .vd-truth.miss {border-color:#C2412D}
+.explain-grid {display:grid; grid-template-columns:repeat(3, minmax(190px, 1fr)); gap:10px; margin:8px 0 14px}
+.explain-card {border:1px solid var(--border-color-primary); border-radius:11px; padding:12px 13px; background:var(--background-fill-secondary)}
+.explain-card h4 {margin:0 0 4px; font-size:.98rem}
+.explain-card p {margin:0; font-size:.84rem; line-height:1.42; opacity:.82}
+.layer-stack {display:grid; grid-template-columns:1fr 1fr 1fr; border:1px solid var(--border-color-primary); border-radius:12px; overflow:hidden; margin:8px 0 10px}
+.layer-stack div {padding:14px 16px; min-height:92px}
+.layer-stack div+div {border-left:1px solid var(--border-color-primary)}
+.layer-stack b {display:block; margin-bottom:4px}
+.layer-stack span {font-size:.84rem; line-height:1.4; opacity:.8}
+.layer-early {background:rgba(53,102,214,.07)} .layer-middle {background:rgba(199,131,42,.08)} .layer-late {background:rgba(31,138,112,.08)}
+.plain-note {border-left:4px solid #3566D6; padding:8px 12px; background:rgba(53,102,214,.06); border-radius:4px; font-size:.88rem; line-height:1.45}
+.metric-key {display:grid; grid-template-columns:repeat(3, minmax(180px, 1fr)); gap:10px; margin:8px 0}
+.metric-key div {border-top:3px solid #3566D6; background:var(--background-fill-secondary); border-radius:7px; padding:10px 12px}
+.metric-key b {display:block; margin-bottom:3px}.metric-key span {font-size:.83rem; line-height:1.4; opacity:.82}
 .footnote {font-size:.8rem; opacity:.7}
+@media(max-width:800px){.journey,.explain-grid,.metric-key{grid-template-columns:1fr}.layer-stack{grid-template-columns:1fr}.layer-stack div+div{border-left:0;border-top:1px solid var(--border-color-primary)}}
 """
+
+CONDITION_EXPLANATIONS = {
+    "none": ("Original audio only", "The control. The detector sees the source recordings without a simulated change."),
+    "codec": ("Compression", "Adds one MP3, AAC or Opus copy. This imitates audio sent through apps or streaming."),
+    "noise": ("Background noise", "Adds white, pink or brown noise at a controlled level. This imitates a less clean recording."),
+    "channel": ("Device or room", "Changes bandwidth, equalisation or reverberation. This imitates a phone, microphone or room."),
+    "mix": ("One random family", "Adds one changed copy per clip, using either codec, noise or channel. Training size stays comparable."),
+    "all": ("All three copies", "Adds three separate copies per clip: one codec, one noise and one channel version."),
+}
 
 
 # ----------------------------------------------------------------------------- formatting
@@ -112,19 +136,61 @@ def esc(x) -> str:
 def header_html() -> str:
     s = ENGINE.status()
     chips = [
-        ("ok", f"Run {s['run_id']}"),
-        ("ok" if s["manifests_ok"] else "warn", "Manifests verified" if s["manifests_ok"] else "Manifest check failed"),
-        ("ok", f"{s['encoder']} @ {s['encoder_commit'] or '?'}"),
-        ("ok" if "cpu" not in str(s["device"]).lower() else "warn", f"Device: {s['device']}"),
+        ("ok", "Ready"),
+        ("ok", "Runs locally"),
         ("ok" if s["itw_available"] else "warn",
-         f"In-the-Wild: {s['itw_clips']:,} clips" if s["itw_available"] else "In-the-Wild unavailable"),
+         f"Examples available: {s['itw_clips']:,}" if s["itw_available"] else "Examples unavailable"),
     ]
     chip_html = "".join(f'<span class="chip {c}">{esc(t)}</span>' for c, t in chips)
     return (
-        '<div class="hdr"><div><h1>XLS-R Audio Deepfake Detector</h1>'
-        "<p>REIT7841 thesis demo · Jingkai Guo · frozen XLS-R-53 features + logistic-regression probes "
-        "trained on ASVspoof 2019 LA</p></div>"
+        '<div class="hdr"><div><h1>Audio Deepfake Detector</h1>'
+        "<p>A research demo that shows a verdict, the evidence behind it, and where the result can be trusted.</p></div>"
         f'<div class="chips">{chip_html}</div></div>'
+    )
+
+
+def journey_html() -> str:
+    return (
+        '<div class="journey">'
+        '<div><b>1 · Add audio</b><span>Upload, record, or choose a labelled example.</span></div>'
+        '<div><b>2 · Prepare</b><span>Convert to mono 16 kHz, trim silence, and keep at most 6 seconds.</span></div>'
+        '<div><b>3 · Read features</b><span>XLS-R turns the sound into learned feature stages.</span></div>'
+        '<div><b>4 · Decide</b><span>A small classifier compares the result with a fixed decision line.</span></div>'
+        '</div>'
+    )
+
+
+def condition_cards_html() -> str:
+    cards = []
+    for cond in CONDITIONS:
+        title, description = CONDITION_EXPLANATIONS[cond]
+        layer = ENGINE.probes[cond].layer if cond in ENGINE.probes else "?"
+        cards.append(
+            f'<div class="explain-card"><h4>{esc(CONDITION_NAMES[cond])}</h4>'
+            f'<p><b>{esc(title)}</b><br>{esc(description)}<br><br>Reads XLS-R stage <b>{layer}</b> of 24.</p></div>'
+        )
+    return '<div class="explain-grid">' + "".join(cards) + '</div>'
+
+
+def layer_explainer_html() -> str:
+    return (
+        '<div class="layer-stack">'
+        '<div class="layer-early"><b>Early stages · 0–8</b><span>Tend to keep local sound details such as energy, pitch and short acoustic patterns.</span></div>'
+        '<div class="layer-middle"><b>Middle stages · 10–16</b><span>Combine local details into broader speech patterns. This pilot found the clearest exploratory noise gain here.</span></div>'
+        '<div class="layer-late"><b>Later stages · 18–24</b><span>Combine information over more context and can represent more abstract speech patterns.</span></div>'
+        '</div>'
+        '<div class="plain-note"><b>A layer is a processing stage, not a piece of the audio.</b> '
+        'Higher does not automatically mean better. The dashboard tests several stages because the same clip can cross the decision line at different stages.</div>'
+    )
+
+
+def metric_key_html() -> str:
+    return (
+        '<div class="metric-key">'
+        '<div><b>Decision score</b><span>Below 0.5 is the real side. At or above 0.5 is the fake side. It is not a probability.</span></div>'
+        '<div><b>Versions agreeing</b><span>How many of the six training versions make the same decision. Agreement is not proof of correctness.</span></div>'
+        '<div><b>Ground truth</b><span>Shown only for the labelled In-the-Wild examples. It checks the output and was not used for training.</span></div>'
+        '</div>'
     )
 
 
@@ -140,40 +206,31 @@ def verdict_html(a: Analysis, cond: str) -> str:
     n_fake = sum(1 for x in a.scores.values() if x.fake)
     n = len(a.scores)
     agree = n_fake if s.fake else n - n_fake
-    eer = f"{s.pilot_target_eer * 100:.1f}%" if s.pilot_target_eer is not None else "—"
-    bal = f"{s.pilot_bal_acc:.2f}" if s.pilot_bal_acc is not None else "—"
     pin = min(98.0, max(2.0, s.score * 100))
+    analysed = (a.used_end - a.used_start) / 16000
     parts = [
         f'<div class="vd {kind}">',
-        f'<div class="vd-top"><span class="vd-label">{kind.upper()}</span>'
-        f'<span class="vd-model">{esc(s.name)} · XLS-R layer {s.layer} · C = {s.C:g}</span></div>',
+        f'<div class="vd-top"><span class="vd-label">LIKELY {kind.upper()}</span>'
+        f'<span class="vd-model">Decision from {esc(s.name)} · reads XLS-R stage {s.layer} of 24</span></div>',
         f'<div class="vd-gauge"><div class="vd-mid"></div><div class="vd-pin" style="left:{pin:.1f}%"></div></div>',
-        '<div class="vd-scale"><span>real</span><span>threshold</span><span>fake</span></div>',
+        '<div class="vd-scale"><span>more like real</span><span>decision line · 0.5</span><span>more like fake</span></div>',
         '<div class="vd-stats">',
-        f"<div><b>Fake score</b><span>{s.score:.2f}</span></div>",
-        f"<div><b>Logit vs threshold</b><span>{s.logit:+.2f} / {s.threshold:+.2f}</span></div>",
-        f"<div><b>Models agreeing</b><span>{agree} of {n}</span></div>",
-        f"<div><b>Pilot EER on In-the-Wild</b><span>{eer}</span></div>",
-        f"<div><b>Pilot balanced acc.</b><span>{bal}</span></div>",
+        f"<div><b>Decision score</b><span>{s.score:.2f}</span></div>",
+        f"<div><b>Training versions agreeing</b><span>{agree} of {n}</span></div>",
+        f"<div><b>Audio used</b><span>{analysed:.2f} s</span></div>",
         "</div>",
     ]
     gt = a.ground_truth
     if gt:
         truth = gt["label"]
         hit = (truth == "fake") == s.fake
-        rec = s.recorded_logit
-        rec_txt = ""
-        if rec is not None:
-            diff = abs(rec - s.logit)
-            rec_txt = (f" Pilot run logit for this clip: {rec:+.3f} (live {s.logit:+.3f}, "
-                       f"{'matches' if diff < 0.25 else 'differs by ' + format(diff, '.3f')}).")
         parts.append(
-            f'<div class="vd-truth {"hit" if hit else "miss"}"><b>In-the-Wild ground truth: {esc(truth.upper())}</b> '
-            f"· speaker {esc(gt['speaker_id'])} · clip {esc(gt['sample_id'])} → "
-            f"<b>{'correct' if hit else 'wrong'}</b>.{esc(rec_txt)}</div>")
+            f'<div class="vd-truth {"hit" if hit else "miss"}"><b>Known label: {esc(truth.upper())}</b> '
+            f"→ this decision is <b>{'correct' if hit else 'wrong'}</b>. "
+            "The label is shown only after analysis and was not used to train the detector.</div>")
     parts.append(
-        '<div class="vd-note footnote">Fake score = sigmoid(logit − threshold): 0.5 sits on the threshold fixed at the '
-        "source-validation EER point. It is not a calibrated probability. Models were trained only on ASVspoof 2019 LA.</div>")
+        '<div class="vd-note footnote"><b>How to read it:</b> 0.5 is the fixed decision line. The score shows which side '
+        'the model is on and how far it moved after a mathematical rescaling. It is not “50% fake” and it is not calibrated confidence.</div>')
     parts.append("</div>")
     return "".join(parts)
 
@@ -186,14 +243,14 @@ def comparison_df(a: Analysis) -> pd.DataFrame:
             continue
         s = a.scores[cond]
         row = {
-            "Model": s.name,
-            "Layer": s.layer,
+            "Training version": s.name,
+            "XLS-R stage": s.layer,
             "C": s.C,
             "Logit": round(s.logit, 3),
             "Threshold": round(s.threshold, 3),
             "Margin": round(s.margin, 3),
             "Verdict": "FAKE" if s.fake else "REAL",
-            "Fake score": round(s.score, 3),
+            "Decision score": round(s.score, 3),
             "Pilot ITW EER %": round(s.pilot_target_eer * 100, 1) if s.pilot_target_eer is not None else None,
         }
         if has_rec:
@@ -207,12 +264,10 @@ def clip_md(a: Analysis) -> str:
     used = (a.used_end - a.used_start) / 16000
     trim = ("trimming skipped (less than 0.5 s would remain)" if info.get("trim_fallback")
             else f"{info.get('lead_silence_s', 0):.2f} s leading and {info.get('trail_silence_s', 0):.2f} s trailing silence trimmed")
-    dev = ENGINE.status()["device"]
     decoded = ("decoded by ffmpeg to 16 kHz mono" if info.get("decoder") == "ffmpeg"
                else f"original {info.get('orig_sr', '?')} Hz, resampled to 16 kHz")
-    return (f"**{esc(a.source)}** · {a.duration_s:.2f} s ({decoded}) · "
-            f"{trim} · **{used:.2f} s analysed** (first 6 s after trimming, as in the pilot) · "
-            f"XLS-R forward pass {a.seconds_encoder * 1000:.0f} ms on {esc(dev)}")
+    return (f"**What the model received:** {esc(a.source)} · {a.duration_s:.2f} s · {decoded} · "
+            f"{trim} · **{used:.2f} s analysed**. The plot below checks the input and analysed region; it does not by itself prove that the voice is fake.")
 
 
 def outputs_for(a: Analysis, cond: str):
@@ -362,36 +417,31 @@ def results_gallery() -> list[tuple[str, str]]:
 
 
 ABOUT_MD = """
-### What this detector is
-- **Features:** `facebook/wav2vec2-large-xlsr-53`, frozen. Each clip gives 25 hidden states (index 0 = input to the first
-  Transformer block, *k* = output of block *k*), mean-pooled over time to 1,024 numbers each.
-- **Classifier:** StandardScaler + class-balanced logistic regression on **one** hidden state. Each of the six models
-  (no augmentation, codec, noise, channel, mix, all) uses the layer and regularisation C that the pilot chose on
-  ASVspoof 2019 LA development data only.
-- **Training data:** 2,400 ASVspoof 2019 LA training clips (the seed-42 80% subset of the 3,000-clip pool; attacks A01–A06),
-  plus one augmented copy per family for the augmented models.
-- **Threshold:** the score where false-accept and false-reject rates are equal on LA development data (EER point).
-  No In-the-Wild label is used to train, tune or set thresholds.
-- **Preprocessing (identical to the pilot):** mono 16 kHz → trim silence below −40 dB → keep the first 6 s →
-  per-utterance zero-mean, unit-variance.
+### What is fixed in this demo
+- **Audio preparation:** mono 16 kHz, trim leading and trailing silence below −40 dB, keep the first 6 seconds, then normalise.
+- **Feature extractor:** frozen `facebook/wav2vec2-large-xlsr-53`. The dashboard reads one of 25 feature stages, indexed 0 to 24.
+- **Small classifier:** class-balanced logistic regression. It turns the chosen feature stage into a real-side or fake-side decision.
+- **Decision line:** fixed using ASVspoof 2019 LA development data. In-the-Wild labels were not used to train, choose a layer, or set the line.
 
-### How to read the screen
-- **Verdict:** the chosen model's decision. *Fake score* is sigmoid(logit − threshold), so 0.5 is the threshold.
-- **Model comparison:** the same clip through all six models. Disagreement is common on out-of-domain audio.
-- **Score by layer:** probes trained at every even layer for no augmentation, noise and mix. Whether a clip looks fake
-  can flip with the layer, which is the paper's main point: layer choice matters as much as augmentation.
-- **In-the-Wild clips:** drawn from the pilot's frozen target manifest. The ground truth and the logit recorded in the
-  pilot run are shown, so you can see the live system reproduces the published numbers.
-
-### Limits
-- Source attacks are 2019-era TTS/VC; modern voice clones can look very different. On In-the-Wild the best of these
-  models still has about 17% EER, and the no-augmentation model flags almost every clip as fake.
-- The noise result is exploratory (post hoc) and still needs a confirmatory run.
-- A research prototype for discussion. Not a forensic tool, and not evidence about any real recording.
+### What this demo cannot tell you
+- The decision score is not a calibrated probability and the six training versions are not six independent detectors.
+- Source attacks are 2019-era TTS and voice conversion. Modern voice clones may behave differently.
+- The exploratory noise pattern still needs an independent, pre-registered confirmation.
+- This is a research prototype, not a forensic tool and not evidence about a real recording.
 
 Code and raw results: github.com/kyleguo1103/Audio-Deepfake-Detection
-(pilot release: tag v0.1-pilot; dashboard: main branch).
 """
+
+
+def research_summary_html() -> str:
+    return (
+        '<div class="explain-grid">'
+        '<div class="explain-card"><h4>Confirmed pilot comparison</h4><p>Mix showed 13.1 percentage points lower EER than no augmentation in the pre-registered run. '
+        'However, Mix used layer 20 and the control used layer 2, so this is not a pure augmentation effect.</p></div>'
+        '<div class="explain-card"><h4>Exploratory fixed-layer pattern</h4><p>When conditions were compared at the same layer, Mix averaged 0.0 points of gain. Noise averaged 4.0 points lower EER and was better at 12 of 13 layers.</p></div>'
+        '<div class="explain-card"><h4>What must happen next</h4><p>Pre-declare a target-independent layer policy and test the noise condition on independent data before making a confirmatory claim.</p></div>'
+        '</div>'
+    )
 
 
 # ----------------------------------------------------------------------------- layout
@@ -406,65 +456,72 @@ def build_ui() -> gr.Blocks:
         gr.HTML(header_html())
         state = gr.State(None)
 
-        with gr.Tab("Detect"):
+        with gr.Tab("Try the detector"):
+            gr.HTML(journey_html())
             with gr.Row(equal_height=False):
                 with gr.Column(scale=4, min_width=320):
-                    audio_in = gr.Audio(label="Audio clip", type="filepath", sources=["upload", "microphone"])
-                    model_dd = gr.Dropdown(choices=choices, value=default, label="Model for the verdict",
-                                           info="All six models are always scored; this one drives the verdict.")
-                    detect_btn = gr.Button("Detect", variant="primary", size="lg")
-                    with gr.Accordion("Random In-the-Wild clip (with ground truth)", open=True):
+                    audio_in = gr.Audio(label="1. Add an audio clip", type="filepath", sources=["upload", "microphone"])
+                    model_dd = gr.Dropdown(choices=choices, value=default, label="2. Choose the training version for the main verdict",
+                                           info="The detector design stays the same. Only the audio used during training changes.")
+                    detect_btn = gr.Button("3. Analyse audio", variant="primary", size="lg")
+                    with gr.Accordion("Or choose a labelled research example", open=True):
                         if itw_ok:
-                            gr.Markdown(f"Draws from the {len(ENGINE.itw.rows):,} clips the pilot scored. "
-                                        "The clip loads into the player above and is analysed straight away.",
+                            gr.Markdown(f"Choose from {len(ENGINE.itw.rows):,} In-the-Wild clips. The known label appears only after the detector has run.",
                                         elem_classes="footnote")
                         else:
                             gr.Markdown(f"Unavailable: `{ENGINE.itw.reason}`", elem_classes="footnote")
-                        label_radio = gr.Radio(choices=[("Any", "any"), ("Real", "real"), ("Fake", "fake")],
-                                               value="any", label="True label", interactive=itw_ok)
-                        speaker_dd = gr.Dropdown(choices=speakers, value="__any__", label="Speaker", interactive=itw_ok)
-                        draw_btn = gr.Button("Draw and analyse", interactive=itw_ok)
+                        label_radio = gr.Radio(choices=[("Any", "any"), ("Known real", "real"), ("Known fake", "fake")],
+                                               value="any", label="Example type", interactive=itw_ok)
+                        speaker_dd = gr.Dropdown(choices=speakers, value="__any__", label="Optional speaker filter", interactive=itw_ok)
+                        draw_btn = gr.Button("Choose and analyse example", interactive=itw_ok)
                 with gr.Column(scale=6, min_width=420):
                     verdict = gr.HTML(empty_verdict())
-                    clip_info = gr.Markdown("")
-                    wave_plot = gr.Plot(label="Waveform and spectrogram (shaded parts are not seen by the model)")
-            with gr.Row(equal_height=False):
-                with gr.Column(scale=5, min_width=360):
-                    cmp_plot = gr.Plot(label="All six models on this clip")
-                with gr.Column(scale=5, min_width=360):
-                    cmp_df = gr.Dataframe(label="Scores", interactive=False, wrap=True)
-            layer_plot = gr.Plot(label="Score at every XLS-R layer")
-            gr.Markdown("Each point is a separate probe trained at that layer on ASVspoof 2019 LA. "
-                        "Above zero means that probe calls the clip fake.", elem_classes="footnote")
+                    gr.HTML(metric_key_html())
+            gr.Markdown("### What part of the recording was used")
+            clip_info = gr.Markdown("")
+            wave_plot = gr.Plot(label="Waveform and spectrogram · grey and hatched regions are not analysed")
+            gr.Markdown("### Does the decision change with the training audio?")
+            cmp_plot = gr.Plot(label="The same clip through six training versions")
+            gr.Markdown("The six bars use the same detector design. Only the clean or augmented training copies differ. "
+                        "A score on the other side of 0.5 changes the verdict; the score is not a probability.", elem_classes="footnote")
+            gr.Markdown("### Does the decision change with the XLS-R stage?")
+            gr.HTML(layer_explainer_html())
+            layer_plot = gr.Plot(label="Decision score across XLS-R stages · no augmentation, noise and mix")
+            with gr.Accordion("Technical details for reproducibility", open=False):
+                gr.Markdown("These values reproduce the frozen research run. They are not needed to understand the main verdict.")
+                cmp_df = gr.Dataframe(label="Raw scores and fixed thresholds", interactive=False, wrap=True)
 
             outs = [verdict, wave_plot, cmp_plot, cmp_df, layer_plot, clip_info, state]
             detect_btn.click(on_detect, inputs=[audio_in, model_dd], outputs=outs)
             draw_btn.click(on_draw, inputs=[label_radio, speaker_dd, model_dd], outputs=[audio_in] + outs)
             model_dd.change(on_model_change, inputs=[state, model_dd], outputs=[verdict])
 
-        with gr.Tab("Batch"):
-            gr.Markdown("Score several files at once. Every file goes through all six models; the table and CSV "
-                        "show the chosen model's verdict plus each model's decision and margin.")
-            with gr.Row(equal_height=False):
-                with gr.Column(scale=4, min_width=320):
-                    batch_files = gr.File(label="Audio files", file_count="multiple", file_types=["audio"])
-                    batch_model = gr.Dropdown(choices=choices, value=default, label="Model for the verdict")
-                    batch_btn = gr.Button("Score all files", variant="primary")
-                    batch_csv = gr.File(label="Download results (CSV)", interactive=False)
-                with gr.Column(scale=6, min_width=420):
-                    batch_summary = gr.HTML(empty_verdict("Results appear here."))
-                    batch_df = gr.Dataframe(label="Results", interactive=False, wrap=True)
-            batch_btn.click(on_batch, inputs=[batch_files, batch_model], outputs=[batch_summary, batch_df, batch_csv])
+        with gr.Tab("Understand the elements"):
+            gr.Markdown("## One detector design, six training versions")
+            gr.Markdown("Augmentation changes the **training copy**, not the audio you upload for detection. It teaches the classifier to see the same real or fake label under simulated listening conditions.")
+            gr.HTML(condition_cards_html())
+            gr.Markdown("## What an XLS-R layer means")
+            gr.HTML(layer_explainer_html())
+            gr.Markdown("## What every displayed number means")
+            gr.HTML(metric_key_html())
+            with gr.Accordion("Exact implementation", open=False):
+                gr.Markdown(ABOUT_MD)
+                s = ENGINE.status()
+                gr.Markdown(f"Run `{s['run_id']}` · encoder `{s['encoder']}` @ `{s['encoder_commit'] or '?'}` · "
+                            f"device `{s['device']}` · config SHA-256 `{ENGINE.cfg['_config_sha256'][:12]}…`.", elem_classes="footnote")
 
-        with gr.Tab("Pilot results"):
-            gr.Markdown(results_markdown())
-            gallery = results_gallery()
-            if gallery:
-                gr.Gallery(value=gallery, label="Figures from the pilot run", columns=2, height="auto",
-                           object_fit="contain")
-
-        with gr.Tab("About"):
-            gr.Markdown(ABOUT_MD)
+        with gr.Tab("Research evidence"):
+            gr.Markdown("## What the pilot supports, and what it does not")
+            gr.HTML(research_summary_html())
+            gr.Markdown("**EER in plain language:** the error rate at the operating point where false accepts and false rejects are equal. Lower is better. "
+                        "A percentage-point change is the direct difference between two EER percentages.")
+            with gr.Accordion("Full result tables", open=False):
+                gr.Markdown(results_markdown())
+            with gr.Accordion("All pilot figures", open=False):
+                gallery = results_gallery()
+                if gallery:
+                    gr.Gallery(value=gallery, label="Figures from the frozen pilot run", columns=2, height="auto",
+                               object_fit="contain")
             gr.Markdown(f"Probes: `{ENGINE.probe_source}`. Config SHA-256 `{ENGINE.cfg['_config_sha256'][:12]}…`.",
                         elem_classes="footnote")
     return demo
@@ -473,7 +530,7 @@ def build_ui() -> gr.Blocks:
 def main() -> int:
     global ENGINE
     parser = argparse.ArgumentParser(description="XLS-R deepfake detector dashboard")
-    parser.add_argument("--pilot-dir", help="path to pilot_la_to_itw (default: detected from this file)")
+    parser.add_argument("--pilot-dir", help="path to 06_Implementation/pilot_la_to_itw (default: found from this file)")
     parser.add_argument("--data-root", help="override the data_root recorded in the pilot config")
     parser.add_argument("--device", default="auto", help="auto, cuda or cpu")
     parser.add_argument("--retrain", action="store_true", help="refit the probes instead of loading the cache")

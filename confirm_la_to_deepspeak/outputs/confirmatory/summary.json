@@ -1,0 +1,89 @@
+{
+  "created_at_utc": "2026-11-01T12:38:40+00:00",
+  "study_id": "CONFIRM_LA2019_TO_DEEPSPEAK_V2_NOISE_2026-10",
+  "status": "completed_without_target_driven_changes",
+  "fixed_layer": 10,
+  "fixed_C": 0.1,
+  "seeds": [
+    42,
+    1337,
+    2026
+  ],
+  "n_source_train_pool": 3000,
+  "n_source_validation": 2000,
+  "n_target": 1800,
+  "target_counts": {
+    "real": 1324,
+    "fake": 476,
+    "identities": 56
+  },
+  "conditions": {
+    "none": {
+      "eer_mean": 0.4882052518892754,
+      "eer_sd": 0.01448605066277209,
+      "roc_auc_mean": 0.49204515643115254,
+      "roc_auc_sd": 0.01444572576766602,
+      "pr_auc_fake_mean": 0.24426003142355943,
+      "pr_auc_fake_sd": 0.007856549939950731,
+      "balanced_accuracy_mean": 0.5143134292992121,
+      "balanced_accuracy_sd": 0.013598086843848643,
+      "macro_f1_mean": 0.4750539984832906,
+      "macro_f1_sd": 0.01182960744529467,
+      "accuracy_mean": 0.49796296296296294,
+      "accuracy_sd": 0.015258405226010753,
+      "recall_fake_mean": 0.5490196078431372,
+      "recall_fake_sd": 0.04118575897067961,
+      "recall_real_mean": 0.47960725075528704,
+      "recall_real_sd": 0.029436820649403454
+    },
+    "noise": {
+      "eer_mean": 0.47646762632545475,
+      "eer_sd": 0.014942981913898768,
+      "roc_auc_mean": 0.5104365008843417,
+      "roc_auc_sd": 0.020722216266899737,
+      "pr_auc_fake_mean": 0.2580841164271222,
+      "pr_auc_fake_sd": 0.011846704280166388,
+      "balanced_accuracy_mean": 0.5131022197398597,
+      "balanced_accuracy_sd": 0.02915218964681232,
+      "macro_f1_mean": 0.4893114069400531,
+      "macro_f1_sd": 0.017203189046289296,
+      "accuracy_mean": 0.5314814814814814,
+      "accuracy_sd": 0.021418329906112612,
+      "recall_fake_mean": 0.4740896358543418,
+      "recall_fake_sd": 0.10774532651981075,
+      "recall_real_mean": 0.5521148036253777,
+      "recall_real_sd": 0.05991097285514186
+    }
+  },
+  "delta_eer_noise_minus_none": -0.01173762556382063,
+  "delta_eer_ci_identity_cluster": [
+    -0.03162974258542291,
+    0.008040189372259756
+  ],
+  "decision_rule": "Improvement is confirmed only if the entire two-sided 95% paired identity-cluster bootstrap CI for EER_noise_minus_EER_none is below zero; harm if entirely above zero; otherwise inconclusive.",
+  "primary_verdict": "inconclusive",
+  "bootstrap": {
+    "reps_requested": 10000,
+    "reps_used": 10000,
+    "none_eer_ci": [
+      0.4482485027194453,
+      0.5314376097705474
+    ],
+    "noise_eer_ci": [
+      0.4411091258008129,
+      0.5173338948443083
+    ],
+    "delta_eer_ci": [
+      -0.03162974258542291,
+      0.008040189372259756
+    ],
+    "p_delta_eer_ge_0": 0.1386
+  },
+  "model_revision": "c3f9d884181a224a6ac87bf8885c84d1cff3384f",
+  "dataset_revision": "dd0d22e5546e6ed26c9c2599d8dc345d2760ad7c",
+  "python": "3.11.17",
+  "platform": "Windows-10-10.0.22000-SP0",
+  "numpy": "1.26.4",
+  "scikit_learn": "1.5.2",
+  "minutes": 0.293
+}

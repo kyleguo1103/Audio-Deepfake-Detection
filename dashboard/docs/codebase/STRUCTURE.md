@@ -4,7 +4,7 @@
 
 | Path | Purpose | Evidence |
 |---|---|---|
-| `app.py` | Gradio UI, event handlers, result formatting, pilot-results and About pages | Module docstring and `build_ui()` |
+| `app.py` | Gradio UI, event handlers, result formatting, detector, explanation and research-evidence pages | Module docstring and `build_ui()` |
 | `detector.py` | Loads the frozen pilot configuration, probes and encoder; decodes and scores audio; samples In-the-Wild; provides CLI self-check | Module docstring, `Engine`, `ItwSampler`, `main()` |
 | `plots.py` | Creates waveform/spectrogram, six-model comparison and layer-profile figures | `waveform_figure()`, `comparison_figure()`, `layer_figure()` |
 | `run_dashboard.bat` | Windows launcher that activates the `xlsr` Conda environment | File contents |

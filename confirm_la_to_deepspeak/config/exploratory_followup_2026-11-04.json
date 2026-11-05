@@ -1,0 +1,37 @@
+{
+  "schema_version": "exploratory-followup-1.0",
+  "study_id": "EXPLORE_LA2019_TO_DEEPSPEAK_V2_FIXED_LAYER_AUG_2026-11",
+  "status": "frozen_after_confirmatory_result_and_before_followup_execution",
+  "frozen_at_local": "2026-11-04 Australia/Brisbane",
+  "classification": "EXPLORATORY_POST_CONFIRMATION",
+  "rationale": "The fixed-layer confirmatory none-vs-noise comparison was inconclusive. This bounded follow-up reuses already-generated source embeddings to compare whether codec and channel augmentations are more promising than ambient additive noise. Because the DeepSpeak result was already observed, no result from this follow-up is confirmatory.",
+  "target_reuse_warning": "DeepSpeak v2 has already been evaluated. These comparisons may explain the failure and generate future hypotheses, but they cannot serve as a new independent validation.",
+  "fixed_settings": {
+    "source_dataset": "ASVspoof 2019 LA frozen pilot pool and validation set",
+    "target_dataset": "DeepSpeak v2.0 frozen official-test audio manifest",
+    "xlsr_revision": "c3f9d884181a224a6ac87bf8885c84d1cff3384f",
+    "hidden_state_layer": 10,
+    "classifier_C": 0.1,
+    "source_subset_fraction": 0.8,
+    "source_seeds": [42, 1337, 2026],
+    "target_threshold_rule": "source-validation EER threshold for each condition and seed",
+    "bootstrap_group": "DeepSpeak identity",
+    "bootstrap_reps": 10000,
+    "bootstrap_seed": 7841
+  },
+  "conditions": {
+    "none": ["clean"],
+    "codec": ["clean", "codec"],
+    "noise": ["clean", "noise"],
+    "channel": ["clean", "channel"],
+    "mix": ["clean", "one deterministic family per source clip"],
+    "all": ["clean", "codec", "noise", "channel"]
+  },
+  "interpretation_rule": "Report mean target metrics and paired identity-cluster intervals versus none. Even if an interval excludes zero, describe the result as exploratory because the augmentation comparison was chosen after observing DeepSpeak performance.",
+  "prohibited_claims": [
+    "independent confirmation",
+    "pre-registered improvement",
+    "generalisation problem solved",
+    "best augmentation selected without seeing the target"
+  ]
+}

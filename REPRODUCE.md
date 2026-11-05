@@ -1,5 +1,9 @@
 # Reproducing the pilot
 
+This page covers the In-the-Wild pilot. The later restricted DeepSpeak fixed-layer study has a separate
+public-safe guide in [`confirm_la_to_deepspeak/README.md`](confirm_la_to_deepspeak/README.md). Its
+sample-level verification requires authorised local DeepSpeak derivatives that are intentionally not committed.
+
 There are three levels. Levels 1 and 2 need no datasets.
 
 | Level | What it shows | Needs | Time |

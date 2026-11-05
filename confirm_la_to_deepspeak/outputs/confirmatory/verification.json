@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "run": "run_20261101_223824",
+  "recalculated_none_eer": 0.4882052518892754,
+  "recalculated_noise_eer": 0.47646762632545475,
+  "recalculated_delta_eer": -0.01173762556382063,
+  "recalculated_delta_ci": [
+    -0.03162974258542291,
+    0.008040189372259756
+  ],
+  "checks": {
+    "prediction_rows_1800": true,
+    "identities_56": true,
+    "none_eer_matches": true,
+    "noise_eer_matches": true,
+    "delta_matches": true,
+    "bootstrap_ci_matches": true
+  }
+}

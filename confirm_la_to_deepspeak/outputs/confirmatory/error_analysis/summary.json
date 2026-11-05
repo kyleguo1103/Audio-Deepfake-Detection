@@ -1,0 +1,60 @@
+{
+  "classification": "EXPLORATORY_ERROR_ANALYSIS",
+  "source_run": "run_20261101_223824",
+  "conditions": [
+    "none",
+    "noise"
+  ],
+  "seeds": [
+    42,
+    1337,
+    2026
+  ],
+  "best_mean_eer_condition": "noise",
+  "overall": {
+    "none": {
+      "error_rate_mean": 0.5020370370370371,
+      "real_false_positive_rate_mean": 0.520392749244713,
+      "fake_false_negative_rate_mean": 0.4509803921568627,
+      "eer": 0.4882052518892754,
+      "roc_auc": 0.49204515643115254,
+      "balanced_accuracy": 0.5143134292992121,
+      "recall_fake": 0.5490196078431372,
+      "recall_real": 0.47960725075528704
+    },
+    "noise": {
+      "error_rate_mean": 0.4685185185185185,
+      "real_false_positive_rate_mean": 0.4478851963746224,
+      "fake_false_negative_rate_mean": 0.5259103641456583,
+      "eer": 0.47646762632545475,
+      "roc_auc": 0.5104365008843417,
+      "balanced_accuracy": 0.5131022197398597,
+      "recall_fake": 0.4740896358543418,
+      "recall_real": 0.5521148036253777
+    }
+  },
+  "always_wrong_counts": {
+    "none": {
+      "all_three_seeds": 830,
+      "majority_of_seeds": 900
+    },
+    "noise": {
+      "all_three_seeds": 702,
+      "majority_of_seeds": 834
+    }
+  },
+  "fake_provider_false_negative_rates": {
+    "none": {
+      "elevenlabs": 0.6856540084388185,
+      "playht": 0.31856540084388185,
+      "speechify": 0.35000000000000003
+    },
+    "noise": {
+      "elevenlabs": 0.7594936708860759,
+      "playht": 0.38396624472573837,
+      "speechify": 0.4354166666666666
+    }
+  },
+  "score_correlation_none_vs_best": 0.9395976849910825,
+  "restricted_output_warning": "hard_cases_LOCAL_RESTRICTED.csv contains DeepSpeak sample identifiers and must not be uploaded publicly."
+}

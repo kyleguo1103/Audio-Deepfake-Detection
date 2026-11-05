@@ -41,7 +41,8 @@ The following versions are the installed versions verified in the local `xlsr` e
 ```bat
 conda activate xlsr
 pip install -r requirements_dashboard.txt
-set HF_HOME=D:\7841_data\hf_cache
+set PILOT_DATA_ROOT=D:\path\to\pilot_data
+set HF_HOME=%PILOT_DATA_ROOT%\hf_cache
 set HF_HUB_OFFLINE=1
 python detector.py --check
 python app.py

@@ -44,7 +44,7 @@
 | Area | Why fragile | Churn signal | Safe change strategy |
 |---|---|---|---|
 | `detector.py` | Couples external pilot APIs, cache schema, model loading and scoring | No Git history is available; file is one of the two largest | Run offline self-check and compare live/recorded logits after every change |
-| `app.py` | Four pages, callbacks, HTML and file serving in one module | No Git history is available; file is one of the two largest | Smoke-test Detect, random target, model switch, Batch and result gallery |
+| `app.py` | Three audience-facing pages, callbacks, HTML and file serving in one module | No Git history is available; file is one of the two largest | Smoke-test uploaded audio, labelled example, model switch, explanations and result gallery |
 | Pilot output contract | Dashboard assumes exact JSON/CSV keys and folder names | External dependency rather than local churn | Pin run/config hashes and validate expected files/keys at startup |
 
 ## 6) `[ASK USER]` Questions

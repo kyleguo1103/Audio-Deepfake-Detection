@@ -1,0 +1,128 @@
+{
+  "schema_version": "confirm-1.0",
+  "study_id": "CONFIRM_LA2019_TO_DEEPSPEAK_V2_NOISE_2026-10",
+  "status": "frozen_before_deepspeak_media_download_or_scoring",
+  "frozen_at_local": "2026-10-24 Australia/Brisbane",
+  "purpose": "Independent-target confirmation of the exploratory additive-noise result. The source pipeline remains ASVspoof 2019 LA; the previously unseen target is the official DeepSpeak v2 test identity split.",
+  "paths": {
+    "project_dir": "D:/7841/06_Implementation/confirm_la_to_deepspeak",
+    "data_root": "D:/7841_data/confirm_la_to_deepspeak",
+    "metadata_dir": "D:/7841/00_Project_Overview/DeepSpeak_Metadata",
+    "prior_pilot_dir": "D:/7841/06_Implementation/pilot_la_to_itw",
+    "audio_dir": "D:/7841_data/confirm_la_to_deepspeak/audio",
+    "staging_dir": "D:/7841_data/confirm_la_to_deepspeak/staging"
+  },
+  "dataset": {
+    "repo_id": "faridlab/deepspeak_v2",
+    "repo_type": "dataset",
+    "displayed_revision_prefix": "dd0d22e",
+    "full_revision_resolution": "Resolve through the Hugging Face API before the first media shard; the resolved SHA must start with dd0d22e and is written to outputs/acquisition/revision_record.json.",
+    "license_name": "deepspeak-v2-0-license",
+    "license_url": "https://docs.google.com/document/d/1tLcYufAl8QIBo--hxApRwlwzb2xVotcxddkZ_q0NIbc/edit?usp=sharing",
+    "access_status": "accepted",
+    "redistribution_rule": "Do not commit or redistribute restricted media, extracted audio, transcripts, or raw restricted annotations.",
+    "archives": [
+      "deepspeak-v2-0.zip", "deepspeak-v2-1.zip", "deepspeak-v2-2.zip", "deepspeak-v2-3.zip", "deepspeak-v2-4.zip",
+      "deepspeak-v2-5.zip", "deepspeak-v2-6.zip", "deepspeak-v2-7.zip", "deepspeak-v2-8.zip", "deepspeak-v2-9.zip",
+      "deepspeak-v2-10.zip", "deepspeak-v2-11.zip", "deepspeak-v2-12.zip", "deepspeak-v2-13.zip", "deepspeak-v2-14.zip",
+      "deepspeak-v2-15.zip", "deepspeak-v2-16.zip", "deepspeak-v2-17.zip", "deepspeak-v2-18.zip", "deepspeak-v2-19.zip",
+      "deepspeak-v2-20.zip", "deepspeak-v2-21.zip", "deepspeak-v2-22.zip", "deepspeak-v2-23.zip", "deepspeak-v2-24.zip"
+    ]
+  },
+  "metadata_sha256": {
+    "README.md": "a65b680107217370104d98c1b67826cfb0a10a837aa0cd2494f9aa01fd7cd4b7",
+    "annotations-split-def.csv": "e6ec2815aa7771a3de8fac5bd9b983393b1fb12388d2b7cd8fb8b47be87c7ee0",
+    "deepspeak_v2.py": "bef4c2c10b44e7de5326b6c67f839fed1b2fe24036f9d5dd74f55f71c4208857",
+    "annotations-real.csv": "ce070e4f9264cec640b0c70f51bd14ea4182fd45dc9f6b6f2928cb44abece64d",
+    "annotations-fake.csv": "949819269157195c283d3d329f4602d46b95f25293dc17cf76f739b5acdb3581"
+  },
+  "label_contract": {
+    "real": 0,
+    "fake": 1
+  },
+  "source": {
+    "dataset": "ASVspoof 2019 Logical Access",
+    "train_manifest": "D:/7841/06_Implementation/pilot_la_to_itw/outputs/manifests/source_train_pool.csv",
+    "validation_manifest": "D:/7841/06_Implementation/pilot_la_to_itw/outputs/manifests/source_validation.csv",
+    "train_subset_fraction": 0.8,
+    "seeds": [42, 1337, 2026],
+    "augmentation_seed": 7841,
+    "reuse_rule": "Use exactly the frozen source clips, preprocessing and deterministic noise mapping from the completed pilot. DeepSpeak is never used for fitting, feature selection, threshold selection or calibration."
+  },
+  "target": {
+    "dataset": "DeepSpeak v2.0",
+    "official_split": "test",
+    "use_for": "final_evaluation_only",
+    "real_rule": "identity in official test split AND script-type in {scripted-short, unscripted}",
+    "fake_rule": "identity-source and identity-target in official test split AND audio-config in {elevenlabs, playht, speechify} AND script-type in {scripted-short, unscripted}",
+    "excluded": [
+      "fake-video rows with audio-config=real",
+      "real rows with script-type=no-speech",
+      "real rows with script-type=scripted-long"
+    ],
+    "expected_counts": {
+      "real": 1324,
+      "fake": 476,
+      "total": 1800,
+      "test_identities": 56
+    },
+    "manifest": "outputs/manifests/target_deepspeak_v2_test.csv",
+    "primary_uncertainty_group": "identity"
+  },
+  "preprocessing": {
+    "sample_rate_hz": 16000,
+    "mono": true,
+    "trim_silence": {
+      "enabled": true,
+      "top_db": 40.0,
+      "frame_length": 400,
+      "hop_length": 160,
+      "min_kept_seconds": 0.5
+    },
+    "max_seconds": 6.0,
+    "crop_policy": "first_max_seconds_after_trim_no_padding",
+    "input_normalisation": "per_utterance_zero_mean_unit_variance"
+  },
+  "feature_extractor": {
+    "model_id": "facebook/wav2vec2-large-xlsr-53",
+    "resolved_revision": "c3f9d884181a224a6ac87bf8885c84d1cff3384f",
+    "frozen": true,
+    "pooling": "mean_over_time",
+    "fixed_hidden_state_layer": 10
+  },
+  "conditions": {
+    "none": "clean source training clips only",
+    "noise": "clean source training clips plus one deterministic additive-noise copy per clip; white, pink or brown noise; SNR uniformly sampled from 5 to 20 dB using the frozen pilot mapping"
+  },
+  "classifier": {
+    "type": "StandardScaler+LogisticRegression",
+    "class_weight": "balanced",
+    "solver": "lbfgs",
+    "max_iter": 3000,
+    "fixed_C_for_both_conditions": 0.1
+  },
+  "selection_history": {
+    "layer_10": "Chosen as a fixed follow-up layer after the completed In-the-Wild exploratory layer analysis; it is not claimed to have been selected without seeing prior target results.",
+    "C_0_1": "Fixed identically for both conditions before DeepSpeak media acquisition or scoring to remove regularisation as a condition-specific confound."
+  },
+  "evaluation": {
+    "primary_metric": "target_eer",
+    "primary_contrast": "EER_noise_minus_EER_none averaged over the three source-subsampling seeds",
+    "primary_ci": "paired identity-cluster bootstrap",
+    "bootstrap_reps": 10000,
+    "bootstrap_seed": 7841,
+    "decision_rule": "Improvement is confirmed only if the entire two-sided 95% paired identity-cluster bootstrap CI for EER_noise_minus_EER_none is below zero; harm if entirely above zero; otherwise inconclusive.",
+    "secondary_metrics": [
+      "ROC AUC",
+      "PR AUC with fake positive",
+      "balanced accuracy at the source-validation EER threshold",
+      "macro F1 at the source-validation EER threshold"
+    ],
+    "exploratory_subgroups": [
+      "fake audio provider",
+      "video generation engine",
+      "script type"
+    ],
+    "no_target_driven_changes": "No target result may be used to change the layer, C, source subset, preprocessing, target manifest, threshold rule or primary decision rule."
+  }
+}

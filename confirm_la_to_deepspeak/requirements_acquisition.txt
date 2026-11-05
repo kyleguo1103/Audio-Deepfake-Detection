@@ -1,0 +1,6 @@
+# Separate acquisition-only environment.
+# Do not install these pins into the existing XLS-R/Transformers environment.
+huggingface_hub==2.2.0
+hf_xet==1.7.0
+imageio-ffmpeg==0.6.0
+soundfile==0.14.0

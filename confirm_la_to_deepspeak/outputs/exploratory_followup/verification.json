@@ -1,0 +1,193 @@
+{
+  "status": "PASS",
+  "source_run": "exploratory_followup_20261104_004109",
+  "classification": "verification_of_exploratory_result",
+  "n_predictions": 1800,
+  "conditions": [
+    "none",
+    "codec",
+    "noise",
+    "channel",
+    "mix",
+    "all"
+  ],
+  "seeds": [
+    42,
+    1337,
+    2026
+  ],
+  "checks": [
+    {
+      "name": "none_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "none_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "none_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "codec_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "codec_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "codec_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "noise_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "noise_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "noise_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "channel_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "channel_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "channel_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "mix_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "mix_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "mix_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "all_per_seed_eer",
+      "passed": true
+    },
+    {
+      "name": "all_per_seed_auc",
+      "passed": true
+    },
+    {
+      "name": "all_mean_eer",
+      "passed": true
+    },
+    {
+      "name": "bootstrap_reps_used",
+      "passed": true
+    },
+    {
+      "name": "none_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "none_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "none_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "none_delta_auc_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "codec_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "codec_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "codec_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "codec_delta_auc_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "noise_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "noise_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "noise_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "noise_delta_auc_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "channel_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "channel_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "channel_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "channel_delta_auc_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "mix_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "mix_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "mix_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "mix_delta_auc_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "all_eer_ci",
+      "passed": true
+    },
+    {
+      "name": "all_auc_ci",
+      "passed": true
+    },
+    {
+      "name": "all_delta_eer_vs_none_ci",
+      "passed": true
+    },
+    {
+      "name": "all_delta_auc_vs_none_ci",
+      "passed": true
+    }
+  ]
+}

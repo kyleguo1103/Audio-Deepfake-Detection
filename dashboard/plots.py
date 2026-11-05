@@ -107,18 +107,20 @@ def comparison_figure(a: Analysis) -> Figure:
     conds = [c for c in CONDITIONS if c in a.scores]
     fig = Figure(figsize=(6.4, 0.42 * len(conds) + 1.1), dpi=110, facecolor="white")
     ax = fig.add_subplot(111)
-    margins = [a.scores[c].margin for c in conds]
-    lim = max(2.0, max(abs(m) for m in margins) * 1.3) if margins else 2.0
+    scores = [a.scores[c].score for c in conds]
     y = np.arange(len(conds))[::-1]
-    for yi, c, m in zip(y, conds, margins):
-        ax.barh(yi, m, height=0.56, color=FAKE if m >= 0 else REAL, alpha=0.9)
-        ax.text(m + (lim * 0.02 if m >= 0 else -lim * 0.02), yi, f"{m:+.2f}", va="center",
-                ha="left" if m >= 0 else "right", fontsize=8.5, color=INK)
-    ax.axvline(0, color=INK, linewidth=1)
+    for yi, c, score in zip(y, conds, scores):
+        fake = score >= 0.5
+        ax.barh(yi, score, height=0.56, color=FAKE if fake else REAL, alpha=0.88)
+        ax.text(min(score + 0.02, 0.98), yi, f"{score:.2f}  {'FAKE' if fake else 'REAL'}", va="center",
+                ha="left" if score < 0.86 else "right", fontsize=8.5, color=INK if score < 0.86 else "white")
+    ax.axvline(0.5, color=INK, linewidth=1.2)
+    ax.text(0.5, len(conds) - 0.25, "decision line", ha="center", va="bottom", fontsize=7.5, color=MUTED)
     ax.set_yticks(y)
-    ax.set_yticklabels([f"{CONDITION_NAMES[c]}  (L{a.scores[c].layer})" for c in conds], fontsize=8.5, color=INK)
-    ax.set_xlim(-lim, lim)
-    ax.set_xlabel("Logit minus threshold   ← real  |  fake →", color=MUTED, fontsize=8.5)
+    ax.set_yticklabels([f"{CONDITION_NAMES[c]}  · stage {a.scores[c].layer}" for c in conds], fontsize=8.5, color=INK)
+    ax.set_xlim(0, 1)
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_xlabel("Decision score   real side  ←  0.5  →  fake side   (not a probability)", color=MUTED, fontsize=8.5)
     _style(ax)
     ax.grid(axis="y", visible=False)
     fig.subplots_adjust(left=0.36, right=0.97, top=0.95, bottom=0.2 if len(conds) > 3 else 0.3)
@@ -128,30 +130,37 @@ def comparison_figure(a: Analysis) -> Figure:
 def layer_figure(a: Analysis, selected_layers: dict[str, int]) -> Figure:
     fig = Figure(figsize=(9.2, 3.4), dpi=110, facecolor="white")
     ax = fig.add_subplot(111)
-    values = [v for c in PROFILE_CONDITIONS for v in a.layer_margins.get(c, {}).values()]
-    lim = max(2.0, max(abs(v) for v in values) * 1.15) if values else 2.0
-    ax.axhspan(0, lim, color=FAKE, alpha=0.05, linewidth=0)
-    ax.axhspan(-lim, 0, color=REAL, alpha=0.05, linewidth=0)
-    ax.axhline(0, color=INK, linewidth=1)
-    ax.text(0.005, 0.97, "judged fake", transform=ax.transAxes, va="top", fontsize=8, color=FAKE)
-    ax.text(0.005, 0.03, "judged real", transform=ax.transAxes, va="bottom", fontsize=8, color=REAL)
+    ax.axvspan(-0.6, 8.9, color=COLORS["mix"], alpha=0.035, linewidth=0)
+    ax.axvspan(8.9, 16.9, color=COLORS["channel"], alpha=0.045, linewidth=0)
+    ax.axvspan(16.9, 24.6, color=COLORS["noise"], alpha=0.035, linewidth=0)
+    ax.axhspan(0.5, 1.0, color=FAKE, alpha=0.05, linewidth=0)
+    ax.axhspan(0.0, 0.5, color=REAL, alpha=0.05, linewidth=0)
+    ax.axhline(0.5, color=INK, linewidth=1)
+    ax.text(0.005, 0.97, "fake side", transform=ax.transAxes, va="top", fontsize=8, color=FAKE)
+    ax.text(0.005, 0.03, "real side", transform=ax.transAxes, va="bottom", fontsize=8, color=REAL)
+    ax.text(4, 1.035, "early", ha="center", va="bottom", fontsize=8, color=MUTED)
+    ax.text(13, 1.035, "middle", ha="center", va="bottom", fontsize=8, color=MUTED)
+    ax.text(21, 1.035, "later", ha="center", va="bottom", fontsize=8, color=MUTED)
     for c in PROFILE_CONDITIONS:
         pts = sorted(a.layer_margins.get(c, {}).items())
         if not pts:
             continue
-        xs, ys = zip(*pts)
+        xs, margins = zip(*pts)
+        ys = [float(1.0 / (1.0 + np.exp(-np.clip(m, -30, 30)))) for m in margins]
         ax.plot(xs, ys, color=COLORS[c], linewidth=2, marker="o", markersize=3.5, label=CONDITION_NAMES[c],
                 solid_capstyle="round", solid_joinstyle="round")
         sel = selected_layers.get(c)
-        if sel in dict(pts):
-            ax.plot([sel], [dict(pts)[sel]], marker="o", markersize=11, markerfacecolor="none",
+        score_by_layer = dict(zip(xs, ys))
+        if sel in score_by_layer:
+            ax.plot([sel], [score_by_layer[sel]], marker="o", markersize=11, markerfacecolor="none",
                     markeredgecolor=COLORS[c], markeredgewidth=2)
     ax.set_xlim(-0.6, 24.6)
-    ax.set_ylim(-lim, lim)
+    ax.set_ylim(-0.02, 1.08)
     ax.set_xticks(range(0, 25, 2))
-    ax.set_xlabel("XLS-R layer   (rings = layer each model selected on source validation)", color=MUTED, fontsize=8.5)
-    ax.set_ylabel("Logit − threshold", color=MUTED, fontsize=8.5)
+    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_xlabel("XLS-R processing stage   (rings = the stage selected before target evaluation)", color=MUTED, fontsize=8.5)
+    ax.set_ylabel("Decision score\n(not probability)", color=MUTED, fontsize=8.5)
     _style(ax)
-    ax.legend(loc="upper right", fontsize=8, frameon=False, ncol=3)
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.02), fontsize=8, frameon=False, ncol=3)
     fig.subplots_adjust(left=0.07, right=0.99, top=0.95, bottom=0.17)
     return fig
